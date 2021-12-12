@@ -1,0 +1,133 @@
+modules:
+  - name: health
+    commands:
+      - command: /system/health/print
+        metrics:
+          - param_name: cpu-temperature
+            metric_name: temperature
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: sensor
+                param_type: string
+                value: cpu
+          - param_name: power-consumption
+            param_type: int
+            metric_type: gauge
+          - param_name: board-temperature1
+            metric_name: temperature
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: sensor
+                param_type: string
+                value: board1
+          - param_name: board-temperature2
+            metric_name: temperature
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: sensor
+                param_type: string
+                value: board2
+          - param_name: temperature
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: sensor
+                param_type: string
+                value: general
+          - param_name: voltage
+            metric_name: psu_voltage
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 0
+          - param_name: psu1-voltage
+            metric_name: psu_voltage
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 1
+          - param_name: psu2-voltage
+            metric_name: psu_voltage
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 2
+          - param_name: psu1-current
+            metric_name: psu_current
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 1
+          - param_name: psu2-current
+            metric_name: psu_current
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 2
+          - param_name: psu1-state
+            metric_name: psu_state
+            param_type: int
+            remap_values:
+              ok: 1
+              fail: 0
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 1
+          - param_name: psu2-state
+            metric_name: psu_state
+            param_type: int
+            remap_values:
+              ok: 1
+              fail: 0
+            metric_type: gauge
+            labels:
+              - label_name: psu
+                param_type: string
+                value: 2
+          - param_name: fan1-speed
+            metric_name: fan_speed
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: fan
+                param_type: string
+                value: 1
+          - param_name: fan2-speed
+            metric_name: fan_speed
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: fan
+                param_type: string
+                value: 2
+          - param_name: fan3-speed
+            metric_name: fan_speed
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: fan
+                param_type: string
+                value: 3
+          - param_name: fan4-speed
+            metric_name: fan_speed
+            param_type: int
+            metric_type: gauge
+            labels:
+              - label_name: fan
+                param_type: string
+                value: 4

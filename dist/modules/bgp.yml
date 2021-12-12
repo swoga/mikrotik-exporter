@@ -1,0 +1,38 @@
+modules:
+  - name: bgp
+    commands:
+      - command: /routing/bgp/peer/print
+        prefix: bgp_peer
+        labels:
+          - param_name: name
+            param_type: string
+          - param_name: remote-as
+            param_type: int
+        metrics:
+          - param_name: uptime
+            param_type: timespan
+            metric_type: counter
+          - param_name: prefix-count
+            param_type: int
+            metric_type: gauge
+          - param_name: updates-sent
+            param_type: int
+            metric_type: counter
+          - param_name: updates-received
+            param_type: int
+            metric_type: counter
+          - param_name: withdrawn-sent
+            param_type: int
+            metric_type: counter
+          - param_name: withdrawn-received
+            param_type: int
+            metric_type: counter
+          - param_name: disabled
+            metric_name: enabled
+            param_type: bool
+            metric_type: gauge
+            negate: true
+          - param_name: established
+            param_type: bool
+            metric_type: gauge
+            default: 0

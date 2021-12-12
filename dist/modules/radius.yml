@@ -1,0 +1,38 @@
+modules:
+  - name: radius
+    commands:
+      - command: /radius/print
+        variables:
+          - param_name: .id
+            label_name: id
+            param_type: string
+          - param_name: address
+            param_type: string
+        sub_commands:
+          - command: |-
+              /radius/monitor
+              =numbers={id}
+              =once=
+            labels:
+              - label_name: address
+                param_type: string
+                value: "{address}"
+            metrics:
+              - param_name: requests
+                param_type: int
+                metric_type: counter
+              - param_name: accepts
+                param_type: int
+                metric_type: counter
+              - param_name: rejects
+                param_type: int
+                metric_type: counter
+              - param_name: timeouts
+                param_type: int
+                metric_type: counter
+              - param_name: bad-replies
+                param_type: int
+                metric_type: counter
+              - param_name: last-request-rtt
+                param_type: int
+                metric_type: counter

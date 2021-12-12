@@ -1,0 +1,27 @@
+modules:
+  - name: ospf
+    commands:
+      - command: /routing/ospf/neighbor/print
+        prefix: ospf_neighbor
+        labels:
+          - param_name: router-id
+            param_type: string
+        metrics:
+          - param_name: adjacency
+            param_type: timespan
+            metric_type: counter
+      - command: /routing/ospf/interface/print
+        prefix: ospf_interface
+        labels:
+          - param_name: interface
+            param_type: string
+        metrics:
+          - param_name: neighbors
+            param_type: int
+            metric_type: gauge
+          - param_name: adjacent-neighbors
+            param_type: int
+            metric_type: gauge
+          - param_name: passive
+            param_type: bool
+            metric_type: gauge
