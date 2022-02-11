@@ -39,6 +39,9 @@ func (c *Connection) freeInternal() {
 }
 
 func (c *Connection) Free() {
+	if c == nil {
+		return
+	}
 	// do not block caller
 	go c.freeInternal()
 }
