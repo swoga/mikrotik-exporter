@@ -50,7 +50,11 @@ func (c *Config) UnmarshalYAML(node *yaml.Node) error {
 		return err
 	}
 
-	if err := c.loadConfigFiles(); err != nil {
+	return nil
+}
+
+func (c *Config) loadContents(basePath string) error {
+	if err := c.loadConfigFiles(basePath); err != nil {
 		return err
 	}
 
@@ -67,8 +71,9 @@ func (c *Config) UnmarshalYAML(node *yaml.Node) error {
 	return nil
 }
 
-func (c *Config) loadConfigFiles() error {
+func (c *Config) loadConfigFiles(basePath string) error {
 	for _, path := range c.ConfigFiles {
+		path = filepath.Join(basePath, path)
 		log.Logger.Debug().Str("path", path).Msg("get files for glob")
 		files, err := filepath.Glob(path)
 		if err != nil {

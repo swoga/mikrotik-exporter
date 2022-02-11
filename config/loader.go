@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"sync"
 	"syscall"
 
@@ -73,6 +74,15 @@ func (sc *SafeConfig) LoadConfig() (err error) {
 	err = decoder.Decode(c)
 	if err != nil {
 		return fmt.Errorf("error parsing config file: %s", err)
+	}
+	basePath := filepath.Dir(sc.configFile)
+	basePath, err = filepath.Abs(basePath)
+	if err != nil {
+		return err
+	}
+	err = c.loadContents(basePath)
+	if err != nil {
+		return fmt.Errorf("error loading config file: %s", err)
 	}
 
 	sc.Lock()
