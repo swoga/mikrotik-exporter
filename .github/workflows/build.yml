@@ -73,14 +73,13 @@ jobs:
         run: |
           echo "OUTPUT_BINARY=mikrotik-exporter${{ env.OUTPUT_BINARY_EXT }}" >> $GITHUB_ENV
           echo "OUTPUT_ARCHIVE=mikrotik-exporter.${{ matrix.os }}-${{ matrix.arch }}${{ env.OUTPUT_ARCHIVE_EXT }}" >> $GITHUB_ENV
+      - name: Compress files
+        run: ${{ env.ARCHIVER }} ${{ env.OUTPUT_ARCHIVE }} ${{ env.OUTPUT_BINARY }} LICENSE
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: mikrotik-exporter.${{ matrix.os }}-${{ matrix.arch }}
-          path: ${{ env.OUTPUT_BINARY }}
-      - name: Compress files
-        if: startsWith(github.ref, 'refs/tags/')
-        run: ${{ env.ARCHIVER }} ${{ env.OUTPUT_ARCHIVE }} ${{ env.OUTPUT_BINARY }} LICENSE
+          path: ${{ env.OUTPUT_ARCHIVE }}
       - name: Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
@@ -94,6 +93,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: mikrotik-exporter.linux-amd64
+      - name: Decompress
+        run: tar -xf mikrotik-exporter.linux-amd64.tar.gz
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         with:
