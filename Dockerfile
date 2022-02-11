@@ -3,6 +3,7 @@ LABEL org.opencontainers.image.source https://github.com/swoga/mikrotik-exporter
 
 COPY mikrotik-exporter /bin/mikrotik-exporter
 COPY example.yml /etc/mikrotik-exporter/config.yml
+COPY dist/modules /etc/mikrotik-exporter/modules
 
 EXPOSE 9436
 
