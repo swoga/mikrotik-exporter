@@ -23,7 +23,7 @@ var (
 )
 
 func main() {
-	configFile := flag.String("config.file", "", "")
+	configFile := flag.String("config.file", "config.yml", "")
 	debug := flag.Bool("debug", false, "")
 	trace := flag.Bool("trace", false, "")
 	flag.Parse()
