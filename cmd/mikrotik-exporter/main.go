@@ -16,6 +16,8 @@ import (
 )
 
 var (
+	version string = "dev"
+
 	requests          atomic.Int64
 	sc                *config.SafeConfig
 	connectionManager *connection.ConnectionManager
@@ -24,6 +26,8 @@ var (
 
 func main() {
 	log.Logger = log.Output(consoleWriter)
+	log.Info().Str("version", version).Msg("starting mikrotik-exporter")
+
 	configFile := flag.String("config.file", "config.yml", "")
 	debug := flag.Bool("debug", false, "")
 	trace := flag.Bool("trace", false, "")
