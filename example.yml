@@ -1,0 +1,9 @@
+targets:
+  - name: test
+    address: 192.168.88.1
+    username: admin
+    password: 
+    modules: [interface, health, resource]
+  
+config_files: 
+  - ./modules/*
