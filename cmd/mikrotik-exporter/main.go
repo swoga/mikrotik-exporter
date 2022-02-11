@@ -23,19 +23,18 @@ var (
 )
 
 func main() {
+	log.Logger = log.Output(consoleWriter)
 	configFile := flag.String("config.file", "config.yml", "")
 	debug := flag.Bool("debug", false, "")
 	trace := flag.Bool("trace", false, "")
 	flag.Parse()
 
-	globalLogger := log.Output(consoleWriter)
-
 	if *trace {
-		log.Logger = globalLogger.Level(zerolog.TraceLevel)
+		log.Logger = log.Logger.Level(zerolog.TraceLevel)
 	} else if *debug {
-		log.Logger = globalLogger.Level(zerolog.DebugLevel)
+		log.Logger = log.Logger.Level(zerolog.DebugLevel)
 	} else {
-		log.Logger = globalLogger.Level(zerolog.InfoLevel)
+		log.Logger = log.Logger.Level(zerolog.InfoLevel)
 	}
 
 	sc = loadConfig(*configFile)
