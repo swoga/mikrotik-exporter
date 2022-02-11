@@ -7,7 +7,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/mikrotik-exporter",
-            "args": ["--config.file", "example.yml", "--debug"]
+            "args": ["--config.file", "../../config.yml", "--trace"]
         }
     ]
 }
