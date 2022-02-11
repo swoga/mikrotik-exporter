@@ -58,8 +58,10 @@ func main() {
 }
 
 func loadConfig(configFile string) *config.SafeConfig {
-	loader := config.New(configFile)
-	err := loader.LoadConfig()
+	loader, err := config.New(configFile)
+	if err == nil {
+		err = loader.LoadConfig()
+	}
 	if err != nil {
 		log.Panic().Err(err).Msg("error loading config file")
 	}
@@ -67,5 +69,5 @@ func loadConfig(configFile string) *config.SafeConfig {
 	loader.EnableReloadByHTTP()
 	loader.EnableReloadBySIGHUP()
 
-	return &loader
+	return loader
 }

@@ -43,11 +43,16 @@ func (sc *SafeConfig) Get() *Config {
 	return sc.c
 }
 
-func New(configFile string) SafeConfig {
-	return SafeConfig{
-		c:          &Config{},
-		configFile: configFile,
+func New(configFile string) (*SafeConfig, error) {
+	configFileAbs, err := filepath.Abs(configFile)
+	if err != nil {
+		return nil, err
 	}
+
+	return &SafeConfig{
+		c:          &Config{},
+		configFile: configFileAbs,
+	}, nil
 }
 
 func (sc *SafeConfig) LoadConfig() (err error) {
