@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"sync"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -8,11 +9,11 @@ import (
 )
 
 type Connection struct {
-	targetConnections *targetConnections
-	Client            *routeros.Client
-	inUse             bool
-	healthy           bool
-	lastUse           time.Time
+	mu      sync.RWMutex
+	Client  *routeros.Client
+	inUse   bool
+	healthy bool
+	lastUse time.Time
 }
 
 func (c *Connection) check(log zerolog.Logger) bool {
@@ -28,8 +29,8 @@ func (c *Connection) check(log zerolog.Logger) bool {
 }
 
 func (c *Connection) freeInternal(log zerolog.Logger) {
-	c.targetConnections.mu.Lock()
-	defer c.targetConnections.mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
 	log.Trace().Msg("free connection")
 	c.inUse = false
@@ -43,4 +44,45 @@ func (c *Connection) Free(log zerolog.Logger) {
 	}
 	// do not block caller
 	go c.freeInternal(log)
+}
+
+func (c *Connection) Use(log zerolog.Logger) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if c.inUse {
+		log.Trace().Msg("skip connection in use")
+		return false
+	}
+	if !c.healthy {
+		log.Trace().Msg("skip unhealthy connection")
+		return false
+	}
+	if !c.check(log) {
+		return false
+	}
+	log.Trace().Msg("return existing connection")
+	c.inUse = true
+	return true
+}
+
+func (c *Connection) IsInUse() bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	return c.inUse
+}
+
+func (c *Connection) IsHealthy() bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	return c.healthy
+}
+
+func (c *Connection) GetLastUse() time.Time {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	return c.lastUse
 }

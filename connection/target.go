@@ -29,20 +29,9 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 
 	log.Trace().Msg("try to find existing connection")
 	for c := range tc.connections {
-		if c.inUse {
-			log.Trace().Msg("skip connection in use")
-			continue
+		if c.Use(log) {
+			return c, nil
 		}
-		if !c.healthy {
-			log.Trace().Msg("skip unhealthy connection")
-			continue
-		}
-		if !c.check(log) {
-			continue
-		}
-		log.Trace().Msg("return existing connection")
-		c.inUse = true
-		return c, nil
 	}
 
 	log.Info().Msg("connect to target")
@@ -51,8 +40,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 		return nil, err
 	}
 	connection := Connection{
-		targetConnections: tc,
-		Client:            client,
+		Client: client,
 	}
 	tc.connections[&connection] = struct{}{}
 
@@ -64,14 +52,16 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 	defer tc.mu.Unlock()
 
 	for c := range tc.connections {
-		if c.inUse {
+		if c.IsInUse() {
 			continue
 		}
 
-		expired := time.Since(c.lastUse) > useTimeout
+		lastUse := c.GetLastUse()
+		healthy := c.IsHealthy()
+		expired := time.Since(lastUse) > useTimeout
 
-		if !c.healthy || expired {
-			log.Logger.Info().Str("target", tc.targetName).Bool("healthy", c.healthy).Bool("expired", expired).Time("lastUse", c.lastUse).Msg("close and cleanup connection")
+		if !healthy || expired {
+			log.Logger.Info().Str("target", tc.targetName).Bool("healthy", healthy).Bool("expired", expired).Time("lastUse", lastUse).Msg("close and cleanup connection")
 			c.Client.Close()
 			delete(tc.connections, c)
 		}
