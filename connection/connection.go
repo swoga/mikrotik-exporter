@@ -3,7 +3,7 @@ package connection
 import (
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"github.com/swoga/go-routeros"
 )
 
@@ -15,33 +15,32 @@ type Connection struct {
 	lastUse           time.Time
 }
 
-func (c *Connection) check() bool {
-	checkLogger := log.Logger.With().Str("target", c.targetConnections.targetName).Logger()
-	checkLogger.Trace().Msg("run healthcheck")
+func (c *Connection) check(log zerolog.Logger) bool {
+	log.Trace().Msg("run healthcheck")
 	_, err := c.Client.Run("/system/identity/print")
 	c.healthy = err == nil
 	if err != nil {
-		checkLogger.Warn().Err(err).Msg("error during healthcheck")
+		log.Warn().Err(err).Msg("error during healthcheck")
 	} else {
-		checkLogger.Trace().Msg("healthcheck successful")
+		log.Trace().Msg("healthcheck successful")
 	}
 	return c.healthy
 }
 
-func (c *Connection) freeInternal() {
+func (c *Connection) freeInternal(log zerolog.Logger) {
 	c.targetConnections.mu.Lock()
 	defer c.targetConnections.mu.Unlock()
 
-	log.Logger.Trace().Str("target", c.targetConnections.targetName).Msg("free connection")
+	log.Trace().Msg("free connection")
 	c.inUse = false
 	c.lastUse = time.Now()
-	c.check()
+	c.check(log)
 }
 
-func (c *Connection) Free() {
+func (c *Connection) Free(log zerolog.Logger) {
 	if c == nil {
 		return
 	}
 	// do not block caller
-	go c.freeInternal()
+	go c.freeInternal(log)
 }

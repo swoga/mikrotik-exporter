@@ -37,7 +37,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 			log.Trace().Msg("skip unhealthy connection")
 			continue
 		}
-		if !c.check() {
+		if !c.check(log) {
 			continue
 		}
 		log.Trace().Msg("return existing connection")
