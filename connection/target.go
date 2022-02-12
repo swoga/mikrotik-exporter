@@ -51,6 +51,8 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 
+	log.Logger.Trace().Str("target", tc.targetName).Msg("run cleanup")
+
 	for c := range tc.connections {
 		if c.IsInUse() {
 			continue

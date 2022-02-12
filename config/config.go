@@ -136,6 +136,7 @@ func (c *Config) populateModuleMap() error {
 		if exists {
 			return fmt.Errorf("non-unique module name: %s", module.Name)
 		}
+		log.Logger.Trace().Str("module", module.Name).Msg("add module")
 		c.moduleMap[module.Name] = module
 	}
 	return nil
@@ -148,6 +149,7 @@ func (c *Config) populateTargetMap() error {
 		if exists {
 			return fmt.Errorf("non-unique target name: %s", target.Name)
 		}
+		log.Logger.Trace().Str("target", target.Name).Msg("add target")
 		c.targetMap[target.Name] = target
 	}
 	return nil
