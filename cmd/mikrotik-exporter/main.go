@@ -42,9 +42,8 @@ func main() {
 	}
 
 	sc = loadConfig(*configFile)
-	connectionManager = connection.CreateConnectionManager()
-
 	c := sc.Get()
+	connectionManager = connection.CreateConnectionManager(c.ConnectionCleanupIntervalDuration, c.ConnectionUseTimeoutDuration)
 
 	log.Info().Str("path", c.MetricsPath).Msg("serve internal metrics at")
 	http.Handle(c.MetricsPath, promhttp.Handler())

@@ -9,10 +9,12 @@ import (
 	"github.com/swoga/mikrotik-exporter/config"
 )
 
-func CreateConnectionManager() *ConnectionManager {
+func CreateConnectionManager(cleanupInterval time.Duration, useTimeout time.Duration) *ConnectionManager {
 	cm := ConnectionManager{
 		targetConnections: make(map[string]*targetConnections),
 		stopCleanup:       make(chan bool),
+		cleanupInterval:   cleanupInterval,
+		useTimeout:        useTimeout,
 	}
 	cm.StartCleanup()
 	return &cm
@@ -22,6 +24,8 @@ type ConnectionManager struct {
 	mu                sync.Mutex
 	targetConnections map[string]*targetConnections
 	stopCleanup       chan (bool)
+	cleanupInterval   time.Duration
+	useTimeout        time.Duration
 }
 
 func (cm *ConnectionManager) Get(log zerolog.Logger, target *config.Target) (*Connection, error) {
@@ -47,13 +51,13 @@ func (cm *ConnectionManager) cleanup() {
 
 	log.Logger.Trace().Msg("run cleanup")
 	for _, tc := range cm.targetConnections {
-		go tc.cleanup()
+		go tc.cleanup(cm.useTimeout)
 	}
 }
 
 func (cm *ConnectionManager) StartCleanup() {
 	log.Logger.Debug().Msg("start cleanup job")
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(cm.cleanupInterval)
 
 	go func() {
 		for {

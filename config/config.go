@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
@@ -26,19 +27,27 @@ type Config struct {
 
 	ConfigFiles []string `yaml:"config_files"`
 
+	ConnectionCleanupInterval         int `yaml:"connection_cleanup_interval"`
+	ConnectionCleanupIntervalDuration time.Duration
+	ConnectionUseTimeout              int `yaml:"connection_use_timeout"`
+	ConnectionUseTimeoutDuration      time.Duration
+
 	moduleMap map[string]*Module
 	targetMap map[string]*Target
 }
 
 func DefaultConfig() Config {
 	return Config{
-		Listen:      ":9436",
-		MetricsPath: "/metrics",
-		ProbePath:   "/probe",
-		ReloadPath:  "/-/reload",
-		ConfigFiles: []string{"./conf.d/*"},
-		moduleMap:   make(map[string]*Module),
-		targetMap:   make(map[string]*Target),
+		Listen:                    ":9436",
+		MetricsPath:               "/metrics",
+		ProbePath:                 "/probe",
+		ReloadPath:                "/-/reload",
+		ConfigFiles:               []string{"./conf.d/*"},
+		ConnectionCleanupInterval: 60,
+		ConnectionUseTimeout:      300,
+
+		moduleMap: make(map[string]*Module),
+		targetMap: make(map[string]*Target),
 	}
 }
 
@@ -49,6 +58,9 @@ func (c *Config) UnmarshalYAML(node *yaml.Node) error {
 	if err := node.Decode((*plain)(c)); err != nil {
 		return err
 	}
+
+	c.ConnectionCleanupIntervalDuration = time.Duration(c.ConnectionCleanupInterval) * time.Second
+	c.ConnectionUseTimeoutDuration = time.Duration(c.ConnectionUseTimeout) * time.Second
 
 	return nil
 }

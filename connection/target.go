@@ -59,7 +59,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 	return &connection, nil
 }
 
-func (tc *targetConnections) cleanup() {
+func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 
@@ -68,7 +68,7 @@ func (tc *targetConnections) cleanup() {
 			continue
 		}
 
-		expired := time.Since(c.lastUse) > 1*time.Minute
+		expired := time.Since(c.lastUse) > useTimeout
 
 		if !c.healthy || expired {
 			log.Logger.Info().Str("target", tc.targetName).Bool("healthy", c.healthy).Bool("expired", expired).Time("lastUse", c.lastUse).Msg("close and cleanup connection")
