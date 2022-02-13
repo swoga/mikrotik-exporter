@@ -113,13 +113,19 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 
 		var value float64 = 0
 		for i := 1; i < len(match); i++ {
-			groupValue, err := strconv.ParseFloat(match[i], 64)
-			if err != nil {
-				parseLog.Err(err).Str("value", match[i]).Msg("failed to parse timespan value")
-				return 0, false
-			}
+			groupValueRaw := match[i]
 			i++
 			groupSuffix := match[i]
+
+			if groupValueRaw == "" {
+				// value is empty if an optional group did not match
+				continue
+			}
+			groupValue, err := strconv.ParseFloat(groupValueRaw, 64)
+			if err != nil {
+				parseLog.Err(err).Str("value", groupValueRaw).Msg("failed to parse timespan value")
+				return 0, false
+			}
 
 			switch groupSuffix {
 			case "w":
