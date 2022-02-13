@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime/pprof"
 	"syscall"
 	"time"
 
@@ -34,7 +35,17 @@ func main() {
 	configFile := flag.String("config.file", "config.yml", "")
 	debug := flag.Bool("debug", false, "")
 	trace := flag.Bool("trace", false, "")
+	cpuprofile := flag.String("cpuprofile", "", "")
 	flag.Parse()
+
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Err(err).Msg("failed to create cpuprofile")
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	if *trace {
 		log.Logger = log.Logger.Level(zerolog.TraceLevel)
