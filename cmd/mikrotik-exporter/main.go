@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -50,10 +53,14 @@ func main() {
 	log.Info().Str("path", c.ProbePath).Msg("listen for probe requests at")
 	http.HandleFunc(c.ProbePath, handleProbeRequest)
 	log.Info().Str("listen", c.Listen).Msg("starting http server")
-	err := http.ListenAndServe(c.Listen, nil)
-	if err != nil {
-		log.Panic().Err(err).Msg("error starting http server")
-	}
+	server := &http.Server{Addr: c.Listen}
+	go startServer(server)
+
+	waitForSigterm()
+
+	shutdownContext, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	server.Shutdown(shutdownContext)
 }
 
 func loadConfig(configFile string) *config.SafeConfig {
@@ -69,4 +76,18 @@ func loadConfig(configFile string) *config.SafeConfig {
 	loader.EnableReloadBySIGHUP()
 
 	return loader
+}
+
+func startServer(server *http.Server) {
+	err := server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		log.Panic().Err(err).Msg("error starting http server")
+	}
+}
+
+func waitForSigterm() {
+	term := make(chan os.Signal, 1)
+	signal.Notify(term, os.Interrupt, syscall.SIGTERM)
+	<-term
+	log.Info().Msg("received SIGTERM, shutting down")
 }
