@@ -27,6 +27,8 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 	ownCtx, cancel := context.WithTimeout(ctx, x.CommandBase.timeoutDuration)
 	defer cancel()
 
+	metricCache := make(map[string]AddMetric)
+
 	var i int
 	for {
 		select {
@@ -37,7 +39,7 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 			}
 			responseLog := commandLog.With().Int("sentence_no", i).Logger()
 			i += 1
-			err = x.processResponse(ctx, responseLog, client, registerer, parentVariables, re)
+			err = x.processResponse(ctx, responseLog, client, registerer, parentVariables, re, metricCache)
 			if err != nil {
 				return err
 			}
@@ -47,7 +49,7 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 	}
 }
 
-func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string, re *proto.Sentence) error {
+func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string, re *proto.Sentence, metricCache map[string]AddMetric) error {
 	log.Trace().Interface("re", re.Map).Msg("response")
 
 	commandLabelNames := x.HasLabels.LabelNames()
@@ -59,7 +61,7 @@ func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, clien
 			continue
 		}
 
-		metric.AddValue(log, registerer, value, commandLabelNames, commandLabelValues, re.Map, variables)
+		metric.AddValue(log, registerer, value, commandLabelNames, commandLabelValues, re.Map, variables, metricCache)
 	}
 
 	childVariables := x.getChildVariables(log, re.Map, variables)
