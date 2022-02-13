@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -16,9 +17,27 @@ type Connection struct {
 	lastUse time.Time
 }
 
-func (c *Connection) check(log zerolog.Logger) bool {
+func (c *Connection) check(log zerolog.Logger, timeout time.Duration) bool {
 	log.Trace().Msg("run healthcheck")
-	_, err := c.Client.Run("/system/identity/print")
+	response, err := c.Client.ListenArgs([]string{"/system/identity/print"})
+	if err == nil {
+		ownCtx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
+
+	loop:
+		for {
+			select {
+			case re := <-response.Chan():
+				if re == nil {
+					break loop
+				}
+			case <-ownCtx.Done():
+				err = ownCtx.Err()
+				break loop
+			}
+		}
+	}
+
 	c.healthy = err == nil
 	if err != nil {
 		log.Warn().Err(err).Msg("error during healthcheck")
@@ -28,26 +47,26 @@ func (c *Connection) check(log zerolog.Logger) bool {
 	return c.healthy
 }
 
-func (c *Connection) freeInternal(log zerolog.Logger) {
+func (c *Connection) freeInternal(log zerolog.Logger, healthcheckTimeout time.Duration) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	log.Trace().Msg("free connection")
 	c.inUse = false
 	c.lastUse = time.Now()
-	c.check(log)
+	c.check(log, healthcheckTimeout)
 }
 
-func (c *Connection) Free(log zerolog.Logger) {
+func (c *Connection) Free(log zerolog.Logger, healthcheckTimeout time.Duration) {
 	if c == nil {
 		return
 	}
 	// do not block caller
-	go c.freeInternal(log)
+	go c.freeInternal(log, healthcheckTimeout)
 }
 
 // Check if the connection is usable, if yes mark as used (blocks during healthcheck)
-func (c *Connection) Use(log zerolog.Logger) bool {
+func (c *Connection) Use(log zerolog.Logger, healthcheckTimeout time.Duration) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -59,7 +78,7 @@ func (c *Connection) Use(log zerolog.Logger) bool {
 		log.Trace().Msg("skip unhealthy connection")
 		return false
 	}
-	if !c.check(log) {
+	if !c.check(log, healthcheckTimeout) {
 		return false
 	}
 	log.Trace().Msg("return existing connection")

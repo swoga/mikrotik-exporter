@@ -105,7 +105,7 @@ func probeTarget(ctx context.Context, log zerolog.Logger, c *config.Config, regi
 			probeSuccess.Set(1)
 		}
 	}
-	defer conn.Free(log)
+	defer conn.Free(log, target.TimeoutDuration)
 
 	duration := time.Since(start)
 	probeDuration := prometheus.NewGauge(prometheus.GaugeOpts{Name: "probe_duration_seconds"})
