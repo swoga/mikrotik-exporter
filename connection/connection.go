@@ -46,6 +46,7 @@ func (c *Connection) Free(log zerolog.Logger) {
 	go c.freeInternal(log)
 }
 
+// Check if the connection is usable, if yes mark as used (blocks during healthcheck)
 func (c *Connection) Use(log zerolog.Logger) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()

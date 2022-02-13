@@ -23,6 +23,7 @@ func createTargetConnections(targetName string) *targetConnections {
 	return &tc
 }
 
+// Get existing unused connection or create new connection (blocks during healthcheck or if there is an ongoing connection attempt)
 func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Connection, error) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
