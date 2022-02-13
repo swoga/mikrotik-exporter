@@ -12,7 +12,7 @@ type Target struct {
 	Name            string `yaml:"name"`
 	Address         string `yaml:"address"`
 	Timeout         int    `yaml:"timeout"`
-	timeoutDuration time.Duration
+	TimeoutDuration time.Duration
 	Queue           int               `yaml:"queue"`
 	Credentials     Credentials       `yaml:",inline"`
 	Variables       map[string]string `yaml:"variables"`
@@ -48,7 +48,7 @@ func (target *Target) UnmarshalYAML(node *yaml.Node) error {
 		return err
 	}
 
-	target.timeoutDuration = time.Duration(target.Timeout) * time.Second
+	target.TimeoutDuration = time.Duration(target.Timeout) * time.Second
 
 	err := target.Validate()
 	if err != nil {

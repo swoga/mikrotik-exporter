@@ -7,7 +7,7 @@ import (
 )
 
 func (t *Target) Dial() (*routeros.Client, error) {
-	c, err := routeros.DialContext(context.Background(), t.Address, t.Credentials.Username, t.Credentials.Password, t.timeoutDuration)
+	c, err := routeros.DialContext(context.Background(), t.Address, t.Credentials.Username, t.Credentials.Password, t.TimeoutDuration)
 	if err != nil {
 		return nil, err
 	}
