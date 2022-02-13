@@ -13,13 +13,15 @@ type targetConnections struct {
 	targetName  string
 	connections map[*Connection]struct{}
 	mu          sync.Mutex
+	stopCleanup chan (bool)
 }
 
-func createTargetConnections(targetName string) *targetConnections {
+func createTargetConnections(log zerolog.Logger, targetName string, cleanupInterval time.Duration, useTimeout time.Duration) *targetConnections {
 	tc := targetConnections{
 		targetName:  targetName,
 		connections: make(map[*Connection]struct{}),
 	}
+	tc.StartCleanup(log, cleanupInterval, useTimeout)
 	return &tc
 }
 
@@ -68,5 +70,34 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 			c.Client.Close()
 			delete(tc.connections, c)
 		}
+	}
+}
+
+func (tc *targetConnections) StartCleanup(log zerolog.Logger, cleanupInterval time.Duration, useTimeout time.Duration) {
+	log.Debug().Msg("start cleanup job")
+	ticker := time.NewTicker(cleanupInterval)
+
+	go func() {
+		for {
+			select {
+			case <-tc.stopCleanup:
+				ticker.Stop()
+				return
+			case <-ticker.C:
+				tc.cleanup(useTimeout)
+				continue
+			}
+		}
+	}()
+}
+
+func (tc *targetConnections) StopCleanup() {
+	log.Logger.Debug().Msg("stop cleanup job")
+
+	select {
+	case tc.stopCleanup <- true:
+		break
+	default:
+		break
 	}
 }
