@@ -1,11 +1,11 @@
 # mikrotik-exporter
 `mikrotik-exporter` is a Prometheus exporter written in Go with the goal to export all possible metrics from MikroTik devices.  
 It is not predetermined which metrics are collected, you can create your own modules.  
-Some modules are shipped with the program, see [here](/blob/master/dist/modules).  
+Some modules are shipped with the program, see [here](/dist/modules).  
 
 ## Probing
 Targets can be probed by requesting:
-<pre>`http://localhost:9436/probe?<b>target=xxx</b>`</pre>
+<pre>http://localhost:9436/probe?<b>target=xxx</b></pre>
 The modules defined at the target configuration can be overwritten via the query string:
 <pre>http://localhost:9436/probe?target=xxx&<b>modules=interface,health</b></pre>
 For troubleshooting there are also two log levels available:
