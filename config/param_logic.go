@@ -67,9 +67,9 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 
 		log.Trace().Msg("use default")
 		word = utils.Substitute(log, param.Default, variables)
-		value, ok := utils.TryParseDouble(&word)
-		if !ok {
-			log.Error().Str("word", word).Msg("failed to parse default to float")
+		value, err := utils.TryParseDouble(&word)
+		if err != nil {
+			log.Err(err).Str("word", word).Msg("failed to parse default to float")
 		}
 
 		return value, true
@@ -81,9 +81,9 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 
 	switch param.ParamType {
 	case PARAM_TYPE_INT:
-		value, ok := utils.TryParseDouble(&word)
-		if !ok {
-			parseLog.Error().Msg("failed to parse value to float")
+		value, err := utils.TryParseDouble(&word)
+		if err != nil {
+			parseLog.Err(err).Msg("failed to parse value to float")
 			return 0, false
 		}
 		return value, true
