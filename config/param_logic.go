@@ -1,8 +1,6 @@
 package config
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 	"time"
 
@@ -55,8 +53,6 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 	return value, true
 }
 
-var regexTimespan = regexp.MustCompile(`(?:(\d+)(w))?(?:(\d+)(d))?(?:(\d+)(h))?(?:(\d+)(m))?(?:(\d+)(s))?`)
-
 func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, variables map[string]string) (float64, bool) {
 	word, isStaticOrInResponse := param.PreprocessValue(log, response, variables)
 
@@ -105,42 +101,10 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 			return 0, true
 		}
 	case PARAM_TYPE_TIMESPAN:
-		match := regexTimespan.FindStringSubmatch(word)
-		if match == nil {
-			parseLog.Error().Msg("failed to parse timespan")
+		value, err := utils.TryParseTimespan(word)
+		if err != nil {
+			parseLog.Err(err).Msg("failed to parse timespan")
 			return 0, false
-		}
-
-		var value float64 = 0
-		for i := 1; i < len(match); i++ {
-			groupValueRaw := match[i]
-			i++
-			groupSuffix := match[i]
-
-			if groupValueRaw == "" {
-				// value is empty if an optional group did not match
-				continue
-			}
-			groupValue, err := strconv.ParseFloat(groupValueRaw, 64)
-			if err != nil {
-				parseLog.Err(err).Str("value", groupValueRaw).Msg("failed to parse timespan value")
-				return 0, false
-			}
-
-			switch groupSuffix {
-			case "w":
-				value += groupValue * 604800
-			case "d":
-				value += groupValue * 86400
-			case "h":
-				value += groupValue * 3600
-			case "m":
-				value += groupValue * 60
-			case "s":
-				value += groupValue
-			default:
-				parseLog.Panic().Str("suffix", groupSuffix).Msg("invalid timespan suffix")
-			}
 		}
 
 		return value, true
