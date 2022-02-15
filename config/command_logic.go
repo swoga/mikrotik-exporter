@@ -50,6 +50,18 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string, re *proto.Sentence, metricCache map[string]AddMetric) error {
 	log.Trace().Interface("re", re.Map).Msg("response")
 
+	x.addMetrics(log, registerer, variables, re, metricCache)
+
+	childVariables := x.getChildVariables(log, re.Map, variables)
+	err := x.runSubCommands(ctx, log, client, registerer, childVariables, metricCache)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (x *Command) addMetrics(log zerolog.Logger, registerer prometheus.Registerer, variables map[string]string, re *proto.Sentence, metricCache map[string]AddMetric) {
 	commandLabelNames := x.HasLabels.LabelNames()
 	commandLabelValues := x.HasLabels.LabelValues(log, re.Map, variables)
 
@@ -61,14 +73,6 @@ func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, clien
 
 		metric.AddValue(log, registerer, value, commandLabelNames, commandLabelValues, re.Map, variables, metricCache)
 	}
-
-	childVariables := x.getChildVariables(log, re.Map, variables)
-	err := x.runSubCommands(ctx, log, client, registerer, childVariables, metricCache)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (x *Command) getChildVariables(log zerolog.Logger, response map[string]string, variables map[string]string) map[string]string {
