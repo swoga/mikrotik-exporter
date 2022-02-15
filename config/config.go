@@ -11,8 +11,8 @@ import (
 )
 
 type Credentials struct {
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
+	Username *string `yaml:"username"`
+	Password *string `yaml:"password"`
 }
 
 type Config struct {
@@ -75,6 +75,10 @@ func (c *Config) loadContents(basePath string) error {
 	}
 
 	if err := c.populateTargetMap(); err != nil {
+		return err
+	}
+
+	if err := c.populateTargetCredentials(); err != nil {
 		return err
 	}
 
@@ -151,6 +155,22 @@ func (c *Config) populateTargetMap() error {
 		}
 		log.Logger.Trace().Str("target", target.Name).Msg("add target")
 		c.targetMap[target.Name] = target
+	}
+	return nil
+}
+
+func (c *Config) populateTargetCredentials() error {
+	log.Logger.Trace().Msg("populate target credentials")
+
+	for _, target := range c.targetMap {
+		if target.Credentials.Username == nil {
+			target.Credentials.Username = c.Credentials.Username
+			log.Logger.Trace().Str("target", target.Name).Msg("use global username")
+		}
+		if target.Credentials.Password == nil {
+			target.Credentials.Password = c.Credentials.Password
+			log.Logger.Trace().Str("target", target.Name).Msg("use global password")
+		}
 	}
 	return nil
 }
