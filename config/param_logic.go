@@ -36,15 +36,15 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 		return *remappedValue, true
 	}
 
-	for regex, remappedValue := range param.remapValueReParsed {
-		if !regex.MatchString(value) {
+	for _, remapRe := range param.RemapValuesRe {
+		if !remapRe.regex.MatchString(value) {
 			continue
 		}
 		if remappedValue == nil {
 			log.Trace().Msg("regex remapped to null")
 			return "", false
 		}
-		value = regex.ReplaceAllString(value, *remappedValue)
+		value = remapRe.regex.ReplaceAllString(value, *remappedValue)
 
 		log.Trace().Str("value", value).Msg("regex remapped")
 		return value, true

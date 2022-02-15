@@ -31,18 +31,15 @@ type Param struct {
 	Default   string `yaml:"default"`
 	Value     string `yaml:"value"`
 
-	RemapValues        map[string]*string `yaml:"remap_values"`
-	RemapValuesRe      map[string]*string `yaml:"remap_values_re"`
-	remapValueReParsed map[*regexp.Regexp]*string
+	RemapValues   map[string]*string `yaml:"remap_values"`
+	RemapValuesRe []remapRe          `yaml:"remap_values_re"`
 
 	Negate       bool   `yaml:"negate"`
 	DateTimeType string `yaml:"datetime_type"`
 }
 
 func DefaultParam() Param {
-	return Param{
-		remapValueReParsed: make(map[*regexp.Regexp]*string),
-	}
+	return Param{}
 }
 
 func (param *Param) Validate() error {
@@ -57,13 +54,6 @@ func (param *Param) Validate() error {
 	utils.SetDefaultString(&param.DateTimeType, PARAM_DATETYPE_FROM_NOW)
 	if !utils.ArrayContainsString(paramDateTimeTypes, param.DateTimeType) {
 		return errors.New("unknown datetime_Type")
-	}
-	for regex, value := range param.RemapValuesRe {
-		expr, err := regexp.Compile(regex)
-		if err != nil {
-			return err
-		}
-		param.remapValueReParsed[expr] = value
 	}
 
 	return nil
@@ -80,6 +70,50 @@ func (param *Param) UnmarshalYAML(node *yaml.Node) error {
 	err := param.Validate()
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+type remapRe struct {
+	regex       *regexp.Regexp
+	replacement *string
+}
+
+func (r *remapRe) UnmarshalYAML(node *yaml.Node) error {
+	if node.Kind != yaml.MappingNode {
+		return errors.New("expected map")
+	}
+
+	if len(node.Content) != 2 {
+		return errors.New("expected map with one key value pair")
+	}
+
+	var exprRaw interface{}
+
+	if err := node.Content[0].Decode(&exprRaw); err != nil {
+		return err
+	}
+	expr, ok := exprRaw.(string)
+	if !ok {
+		return errors.New("expression not string")
+	}
+	var err error
+	r.regex, err = regexp.Compile(expr)
+	if err != nil {
+		return err
+	}
+
+	var replacementRaw interface{}
+	if err := node.Content[1].Decode(&replacementRaw); err != nil {
+		return err
+	}
+	if replacementRaw != nil {
+		replacement, ok := replacementRaw.(string)
+		if !ok {
+			return errors.New("replacement not string or nil")
+		}
+		r.replacement = &replacement
 	}
 
 	return nil
