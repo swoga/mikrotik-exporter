@@ -15,6 +15,8 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 		log.Trace().Str("value", param.Value).Msg("static parameter")
 		value = utils.Substitute(log, param.Value, variables)
 	} else {
+		log = log.With().Str("param_name", param.ParamName).Logger()
+
 		apiWord, isInResponse := response[param.ParamName]
 
 		if !isInResponse {
@@ -22,7 +24,7 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 			return "", false
 		}
 		value = apiWord
-		log.Trace().Str("name", param.ParamName).Str("value", value).Msg("got word from response")
+		log.Trace().Str("value", value).Msg("got word from response")
 	}
 
 	remappedValue, hasStaticRemap := param.RemapValues[value]
