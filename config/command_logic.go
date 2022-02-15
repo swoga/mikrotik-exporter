@@ -62,6 +62,10 @@ func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, clien
 }
 
 func (x *Command) addMetrics(log zerolog.Logger, registerer prometheus.Registerer, variables map[string]string, re *proto.Sentence, metricCache map[string]AddMetric) {
+	if x.Metrics == nil {
+		return
+	}
+
 	commandLabelNames := x.HasLabels.LabelNames()
 	commandLabelValues := x.HasLabels.LabelValues(log, re.Map, variables)
 
