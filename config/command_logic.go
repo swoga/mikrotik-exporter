@@ -14,7 +14,7 @@ import (
 
 type contextCommandNo struct{}
 
-func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, parentVariables map[string]string) error {
+func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, parentVariables map[string]string, metricCache map[string]AddMetric) error {
 	commandLog := log.With().Str("command_no", ctx.Value(contextCommandNo{}).(string)).Logger()
 	command := utils.Substitute(log, x.CommandBase.Command, parentVariables)
 	commandLog.Debug().Str("command", command).Msg("run command")
@@ -26,8 +26,6 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 
 	ownCtx, cancel := context.WithTimeout(ctx, x.CommandBase.timeoutDuration)
 	defer cancel()
-
-	metricCache := make(map[string]AddMetric)
 
 	var i int
 	for {
@@ -65,7 +63,7 @@ func (x *Command) processResponse(ctx context.Context, log zerolog.Logger, clien
 	}
 
 	childVariables := x.getChildVariables(log, re.Map, variables)
-	err := x.runSubCommands(ctx, log, client, registerer, childVariables)
+	err := x.runSubCommands(ctx, log, client, registerer, childVariables, metricCache)
 	if err != nil {
 		return err
 	}
@@ -84,12 +82,12 @@ func (x *Command) getChildVariables(log zerolog.Logger, response map[string]stri
 	return childVariables
 }
 
-func (x *Command) runSubCommands(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string) error {
+func (x *Command) runSubCommands(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string, metricCache map[string]AddMetric) error {
 	for i, subCommand := range x.SubCommands {
 		commandNo := ctx.Value(contextCommandNo{}).(string)
 		commandCtx := context.WithValue(ctx, contextCommandNo{}, commandNo+","+strconv.Itoa(i))
 
-		err := subCommand.Run(commandCtx, log, client, registerer, variables)
+		err := subCommand.Run(commandCtx, log, client, registerer, variables, metricCache)
 		if err != nil {
 			return err
 		}
