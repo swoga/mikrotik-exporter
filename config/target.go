@@ -17,6 +17,7 @@ type Target struct {
 	Credentials     Credentials       `yaml:",inline"`
 	Variables       map[string]string `yaml:"variables"`
 	Modules         []string          `yaml:"modules"`
+	DiscoverLabels  map[string]string `yaml:"discover_labels"`
 }
 
 func DefaultTarget() Target {

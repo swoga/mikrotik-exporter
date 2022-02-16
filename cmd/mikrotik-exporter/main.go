@@ -63,6 +63,8 @@ func main() {
 	http.Handle(c.MetricsPath, promhttp.Handler())
 	log.Info().Str("path", c.ProbePath).Msg("listen for probe requests at")
 	http.HandleFunc(c.ProbePath, handleProbeRequest)
+	log.Info().Str("path", c.DiscoverPath).Msg("listen for discover requests at")
+	http.HandleFunc(c.DiscoverPath, handleDiscoverRequest)
 	log.Info().Str("listen", c.Listen).Msg("starting http server")
 	server := &http.Server{Addr: c.Listen}
 	go startServer(server)
