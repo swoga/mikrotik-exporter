@@ -34,7 +34,7 @@ type Config struct {
 	ConnectionUseTimeoutDuration      time.Duration
 
 	moduleMap map[string]*Module
-	targetMap map[string]*Target
+	TargetMap map[string]*Target
 }
 
 func DefaultConfig() Config {
@@ -49,7 +49,7 @@ func DefaultConfig() Config {
 		ConnectionUseTimeout:      300,
 
 		moduleMap: make(map[string]*Module),
-		targetMap: make(map[string]*Target),
+		TargetMap: make(map[string]*Target),
 	}
 }
 
@@ -151,12 +151,12 @@ func (c *Config) populateModuleMap() error {
 func (c *Config) populateTargetMap() error {
 	log.Logger.Trace().Msg("populate target map")
 	for _, target := range c.ConfigD.Targets {
-		_, exists := c.targetMap[target.Name]
+		_, exists := c.TargetMap[target.Name]
 		if exists {
 			return fmt.Errorf("non-unique target name: %s", target.Name)
 		}
 		log.Logger.Trace().Str("target", target.Name).Msg("add target")
-		c.targetMap[target.Name] = target
+		c.TargetMap[target.Name] = target
 	}
 	return nil
 }
@@ -164,7 +164,7 @@ func (c *Config) populateTargetMap() error {
 func (c *Config) populateTargetCredentials() error {
 	log.Logger.Trace().Msg("populate target credentials")
 
-	for _, target := range c.targetMap {
+	for _, target := range c.TargetMap {
 		if target.Credentials.Username == nil {
 			target.Credentials.Username = c.Credentials.Username
 			log.Logger.Trace().Str("target", target.Name).Msg("use global username")
@@ -200,7 +200,7 @@ func (c *Config) applyExtensions() {
 }
 
 func (c *Config) GetTarget(name string) *Target {
-	target, ok := c.targetMap[name]
+	target, ok := c.TargetMap[name]
 	if !ok {
 		return nil
 	}
