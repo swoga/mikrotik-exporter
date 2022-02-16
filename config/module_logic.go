@@ -15,8 +15,12 @@ func (module *Module) Run(ctx context.Context, log zerolog.Logger, client *route
 	metricCache := make(map[string]AddMetric)
 
 	for i, command := range module.Commands {
+		commandRegisterer := moduleRegisterer
+		if command.CommandBase.Prefix != "" {
+			commandRegisterer = prometheus.WrapRegistererWithPrefix(command.CommandBase.Prefix+"_", moduleRegisterer)
+		}
 		commandCtx := context.WithValue(ctx, contextCommandNo{}, strconv.Itoa(i))
-		err := command.Run(commandCtx, log, client, moduleRegisterer, variables, metricCache)
+		err := command.Run(commandCtx, log, client, commandRegisterer, variables, metricCache)
 		if err != nil {
 			return err
 		}
