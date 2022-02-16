@@ -9,9 +9,10 @@ import (
 	"github.com/swoga/go-routeros"
 )
 
-func (module *Module) Run(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string, metricCache map[string]AddMetric) error {
+func (module *Module) Run(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string) error {
 	log.Trace().Msg("running module")
 	moduleRegisterer := prometheus.WrapRegistererWithPrefix(module.Name+"_", registerer)
+	metricCache := make(map[string]AddMetric)
 
 	for i, command := range module.Commands {
 		commandCtx := context.WithValue(ctx, contextCommandNo{}, strconv.Itoa(i))

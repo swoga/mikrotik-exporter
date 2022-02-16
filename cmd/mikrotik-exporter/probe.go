@@ -114,8 +114,6 @@ func probeTarget(ctx context.Context, log zerolog.Logger, c *config.Config, regi
 }
 
 func runModules(ctx context.Context, log zerolog.Logger, c *config.Config, registerer prometheus.Registerer, client *routeros.Client, moduleNames []string, variables map[string]string) error {
-	metricCache := make(map[string]config.AddMetric)
-
 	for _, moduleName := range moduleNames {
 		moduleLog := log.With().Str("module", moduleName).Logger()
 		module := c.GetModule(moduleName)
@@ -123,7 +121,7 @@ func runModules(ctx context.Context, log zerolog.Logger, c *config.Config, regis
 			moduleLog.Warn().Msg("skip invalid module")
 			continue
 		}
-		err := module.Run(ctx, moduleLog, client, registerer, variables, metricCache)
+		err := module.Run(ctx, moduleLog, client, registerer, variables)
 		if err != nil {
 			return err
 		}
