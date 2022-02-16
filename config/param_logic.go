@@ -42,11 +42,11 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 		if !remapRe.regex.MatchString(value) {
 			continue
 		}
-		if remappedValue == nil {
+		if remapRe.replacement == nil {
 			log.Trace().Msg("regex remapped to null")
 			return "", false
 		}
-		value = remapRe.regex.ReplaceAllString(value, *remappedValue)
+		value = remapRe.regex.ReplaceAllString(value, *remapRe.replacement)
 
 		log.Trace().Str("value", value).Msg("regex remapped")
 		return value, true
