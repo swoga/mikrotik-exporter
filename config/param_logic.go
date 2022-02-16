@@ -27,8 +27,7 @@ func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]stri
 		log.Trace().Str("value", value).Msg("got word from response")
 	}
 
-	remappedValue, hasStaticRemap := param.RemapValues[value]
-	if hasStaticRemap {
+	if remappedValue, hasStaticRemap := param.RemapValues[value]; hasStaticRemap {
 		if remappedValue == nil {
 			log.Trace().Msg("remapped to null")
 			return "", false
