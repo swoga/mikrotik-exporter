@@ -85,7 +85,7 @@ func handleProbeRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 func probeTarget(ctx context.Context, log zerolog.Logger, c *config.Config, registry *prometheus.Registry, target *config.Target, moduleNames []string) {
-	registerer := prometheus.WrapRegistererWithPrefix("mikrotik_exporter_", registry)
+	registerer := prometheus.WrapRegistererWithPrefix(c.Namespace+"_", registry)
 
 	probeSuccess := prometheus.NewGauge(prometheus.GaugeOpts{Name: "probe_success"})
 	registry.Register(probeSuccess)

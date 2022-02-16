@@ -22,6 +22,7 @@ type Config struct {
 	MetricsPath string `yaml:"metrics_path"`
 	ProbePath   string `yaml:"probe_path"`
 	ReloadPath  string `yaml:"reload_path"`
+	Namespace   string `yaml:"namespace"`
 
 	Credentials Credentials `yaml:",inline"`
 
@@ -42,6 +43,7 @@ func DefaultConfig() Config {
 		MetricsPath:               "/metrics",
 		ProbePath:                 "/probe",
 		ReloadPath:                "/-/reload",
+		Namespace:                 "mikrotik",
 		ConfigFiles:               []string{"./conf.d/*"},
 		ConnectionCleanupInterval: 60,
 		ConnectionUseTimeout:      300,
