@@ -2,7 +2,7 @@ modules:
   - name: bgp
     commands:
       - command: /routing/bgp/peer/print
-        prefix: bgp_peer
+        prefix: peer
         labels:
           - param_name: name
             param_type: string

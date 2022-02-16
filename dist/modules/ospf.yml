@@ -2,7 +2,7 @@ modules:
   - name: ospf
     commands:
       - command: /routing/ospf/neighbor/print
-        prefix: ospf_neighbor
+        prefix: neighbor
         labels:
           - param_name: router-id
             param_type: string
@@ -11,7 +11,7 @@ modules:
             param_type: timespan
             metric_type: counter
       - command: /routing/ospf/interface/print
-        prefix: ospf_interface
+        prefix: interface
         labels:
           - param_name: interface
             param_type: string
