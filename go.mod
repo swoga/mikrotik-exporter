@@ -9,7 +9,7 @@ require (
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rs/zerolog v1.26.1
-	github.com/swoga/go-routeros v0.0.0-20220212230749-c213598b4d1a
+	github.com/swoga/go-routeros v0.0.0-20220218134042-e94d13f31003
 	go.uber.org/atomic v1.9.0
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect

@@ -203,6 +203,8 @@ github.com/swoga/go-routeros v0.0.0-20211211203346-83dbdd72fa63 h1:ODn63dxD+08eB
 github.com/swoga/go-routeros v0.0.0-20211211203346-83dbdd72fa63/go.mod h1:xK777S2HGlNl4N+nIKd4UcFuxRKdCxZwzCqKa1gfumk=
 github.com/swoga/go-routeros v0.0.0-20220212230749-c213598b4d1a h1:3GQZuolMoSYUajmvjrgDCv+b9eiiijsUAVHJNGdBIhA=
 github.com/swoga/go-routeros v0.0.0-20220212230749-c213598b4d1a/go.mod h1:xK777S2HGlNl4N+nIKd4UcFuxRKdCxZwzCqKa1gfumk=
+github.com/swoga/go-routeros v0.0.0-20220218134042-e94d13f31003 h1:h06n8/7kOhySvHMjgDHEwEB/HzeBXZIXjgpzqXcd3iQ=
+github.com/swoga/go-routeros v0.0.0-20220218134042-e94d13f31003/go.mod h1:xK777S2HGlNl4N+nIKd4UcFuxRKdCxZwzCqKa1gfumk=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
