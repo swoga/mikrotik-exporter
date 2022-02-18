@@ -15,6 +15,7 @@ type Connection struct {
 	inUse   bool
 	healthy bool
 	lastUse time.Time
+	id      int
 }
 
 func (c *Connection) check(log zerolog.Logger, timeout time.Duration) bool {

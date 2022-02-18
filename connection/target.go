@@ -14,6 +14,7 @@ type targetConnections struct {
 	connections map[*Connection]struct{}
 	mu          sync.Mutex
 	stopCleanup chan (bool)
+	nextId      int
 }
 
 func createTargetConnections(log zerolog.Logger, targetName string, cleanupInterval time.Duration, useTimeout time.Duration) *targetConnections {
@@ -37,6 +38,8 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 		}
 	}
 
+	id := tc.nextId
+	tc.nextId++
 	log.Info().Msg("connect to target")
 	client, err := target.Dial()
 	if err != nil {
@@ -47,6 +50,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 
 	connection := Connection{
 		Client: client,
+		id:     id,
 	}
 	tc.connections[&connection] = struct{}{}
 
