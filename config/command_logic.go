@@ -39,6 +39,9 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 				}
 			}
 			if re == nil {
+				if open {
+					return errors.New("unexpected nil sentence while channel is open")
+				}
 				commandLog.Trace().Msg("all rows received")
 				return nil
 			}
