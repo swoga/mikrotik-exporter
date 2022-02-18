@@ -67,7 +67,8 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 
-	log.Logger.Trace().Str("target", tc.targetName).Msg("run cleanup")
+	cleanupLog := log.With().Str("target", tc.targetName).Logger()
+	cleanupLog.Trace().Msg("run cleanup")
 
 	for c := range tc.connections {
 		if c.IsInUse() {
@@ -79,7 +80,7 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 		expired := time.Since(lastUse) > useTimeout
 
 		if !healthy || expired {
-			log.Logger.Info().Str("target", tc.targetName).Bool("healthy", healthy).Bool("expired", expired).Time("lastUse", lastUse).Msg("close and cleanup connection")
+			cleanupLog.Info().Bool("healthy", healthy).Bool("expired", expired).Time("lastUse", lastUse).Msg("close and cleanup connection")
 			c.Client.Close()
 			delete(tc.connections, c)
 		}
