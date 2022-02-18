@@ -27,23 +27,25 @@ func createTargetConnections(log zerolog.Logger, targetName string, cleanupInter
 }
 
 // Get existing unused connection or create new connection (blocks during healthcheck or if there is an ongoing connection attempt)
-func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Connection, error) {
+func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Connection, zerolog.Logger, error) {
 	tc.mu.Lock()
 	defer tc.mu.Unlock()
 
 	log.Trace().Msg("try to find existing connection")
 	for c := range tc.connections {
-		if c.Use(log, target.TimeoutDuration) {
-			return c, nil
+		if ok, log := c.Use(log, target.TimeoutDuration); ok {
+			return c, log, nil
 		}
 	}
 
 	id := tc.nextId
 	tc.nextId++
+	log = log.With().Int("connection_no", id).Logger()
+
 	log.Info().Msg("connect to target")
 	client, err := target.Dial()
 	if err != nil {
-		return nil, err
+		return nil, log, err
 	}
 	errC := client.Async()
 	go handleAsyncError(log, errC)
@@ -54,7 +56,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 	}
 	tc.connections[&connection] = struct{}{}
 
-	return &connection, nil
+	return &connection, log, nil
 }
 
 func handleAsyncError(log zerolog.Logger, errC <-chan error) {
@@ -80,7 +82,7 @@ func (tc *targetConnections) cleanup(useTimeout time.Duration) {
 		expired := time.Since(lastUse) > useTimeout
 
 		if !healthy || expired {
-			cleanupLog.Info().Bool("healthy", healthy).Bool("expired", expired).Time("lastUse", lastUse).Msg("close and cleanup connection")
+			cleanupLog.Info().Int("connection_no", c.id).Bool("healthy", healthy).Bool("expired", expired).Time("lastUse", lastUse).Msg("close and cleanup connection")
 			c.Client.Close()
 			delete(tc.connections, c)
 		}

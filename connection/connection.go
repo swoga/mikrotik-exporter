@@ -67,24 +67,26 @@ func (c *Connection) Free(log zerolog.Logger, healthcheckTimeout time.Duration) 
 }
 
 // Check if the connection is usable, if yes mark as used (blocks during healthcheck)
-func (c *Connection) Use(log zerolog.Logger, healthcheckTimeout time.Duration) bool {
+func (c *Connection) Use(log zerolog.Logger, healthcheckTimeout time.Duration) (bool, zerolog.Logger) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
+	useLog := log.With().Int("connection_no", c.id).Logger()
+
 	if c.inUse {
-		log.Trace().Msg("skip connection in use")
-		return false
+		useLog.Trace().Msg("skip connection in use")
+		return false, log
 	}
 	if !c.healthy {
-		log.Trace().Msg("skip unhealthy connection")
-		return false
+		useLog.Trace().Msg("skip unhealthy connection")
+		return false, log
 	}
-	if !c.check(log, healthcheckTimeout) {
-		return false
+	if !c.check(useLog, healthcheckTimeout) {
+		return false, log
 	}
-	log.Trace().Msg("return existing connection")
+	useLog.Trace().Msg("return existing connection")
 	c.inUse = true
-	return true
+	return true, useLog
 }
 
 func (c *Connection) IsInUse() bool {

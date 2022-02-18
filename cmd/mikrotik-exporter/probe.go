@@ -92,7 +92,7 @@ func probeTarget(ctx context.Context, log zerolog.Logger, c *config.Config, regi
 
 	start := time.Now()
 
-	conn, err := connectionManager.Get(log, target)
+	conn, log, err := connectionManager.Get(log, target)
 	if err != nil {
 		log.Err(err).Msg("error connecting to target")
 		probeSuccess.Set(0)

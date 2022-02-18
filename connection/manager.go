@@ -24,7 +24,7 @@ type ConnectionManager struct {
 	useTimeout        time.Duration
 }
 
-func (cm *ConnectionManager) Get(log zerolog.Logger, target *config.Target) (*Connection, error) {
+func (cm *ConnectionManager) Get(log zerolog.Logger, target *config.Target) (*Connection, zerolog.Logger, error) {
 	cm.mu.Lock()
 
 	tc, found := cm.targetConnections[target.Name]
