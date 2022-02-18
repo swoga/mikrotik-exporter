@@ -42,12 +42,21 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 	if err != nil {
 		return nil, err
 	}
+	errC := client.Async()
+	go handleAsyncError(log, errC)
+
 	connection := Connection{
 		Client: client,
 	}
 	tc.connections[&connection] = struct{}{}
 
 	return &connection, nil
+}
+
+func handleAsyncError(log zerolog.Logger, errC <-chan error) {
+	for err := range errC {
+		log.Err(err).Msg("error during async operation")
+	}
 }
 
 func (tc *targetConnections) cleanup(useTimeout time.Duration) {
