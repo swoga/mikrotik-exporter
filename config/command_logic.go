@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -30,7 +31,13 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 	var i int
 	for {
 		select {
-		case re := <-response.Chan():
+		case re, open := <-response.Chan():
+			if !open {
+				commandLog.Trace().Msg("response channel closed")
+				if err := response.Err(); err != nil {
+					return err
+				}
+			}
 			if re == nil {
 				commandLog.Trace().Msg("all rows received")
 				return nil
