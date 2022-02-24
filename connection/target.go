@@ -33,7 +33,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 
 	log.Trace().Msg("try to find existing connection")
 	for c := range tc.connections {
-		if ok, log := c.Use(log, target.TimeoutDuration); ok {
+		if ok, log := c.Use(log); ok {
 			return c, log, nil
 		}
 	}

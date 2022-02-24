@@ -1,7 +1,6 @@
 package connection
 
 import (
-	"context"
 	"sync"
 	"time"
 
@@ -18,27 +17,9 @@ type Connection struct {
 	id      int
 }
 
-func (c *Connection) check(log zerolog.Logger, timeout time.Duration) bool {
+func (c *Connection) check(log zerolog.Logger) bool {
 	log.Trace().Msg("run healthcheck")
-	response, err := c.Client.ListenArgs([]string{"/system/identity/print"})
-	if err == nil {
-		ownCtx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
-
-	loop:
-		for {
-			select {
-			case re := <-response.Chan():
-				if re == nil {
-					break loop
-				}
-			case <-ownCtx.Done():
-				err = ownCtx.Err()
-				break loop
-			}
-		}
-	}
-
+	_, err := c.Client.Run("/system/identity/print")
 	c.healthy = err == nil
 	if err != nil {
 		log.Warn().Err(err).Msg("error during healthcheck")
@@ -48,26 +29,26 @@ func (c *Connection) check(log zerolog.Logger, timeout time.Duration) bool {
 	return c.healthy
 }
 
-func (c *Connection) freeInternal(log zerolog.Logger, healthcheckTimeout time.Duration) {
+func (c *Connection) freeInternal(log zerolog.Logger) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	log.Trace().Msg("free connection")
 	c.inUse = false
 	c.lastUse = time.Now()
-	c.check(log, healthcheckTimeout)
+	c.check(log)
 }
 
-func (c *Connection) Free(log zerolog.Logger, healthcheckTimeout time.Duration) {
+func (c *Connection) Free(log zerolog.Logger) {
 	if c == nil {
 		return
 	}
 	// do not block caller
-	go c.freeInternal(log, healthcheckTimeout)
+	go c.freeInternal(log)
 }
 
 // Check if the connection is usable, if yes mark as used (blocks during healthcheck)
-func (c *Connection) Use(log zerolog.Logger, healthcheckTimeout time.Duration) (bool, zerolog.Logger) {
+func (c *Connection) Use(log zerolog.Logger) (bool, zerolog.Logger) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -81,7 +62,7 @@ func (c *Connection) Use(log zerolog.Logger, healthcheckTimeout time.Duration) (
 		useLog.Trace().Msg("skip unhealthy connection")
 		return false, log
 	}
-	if !c.check(useLog, healthcheckTimeout) {
+	if !c.check(useLog) {
 		return false, log
 	}
 	useLog.Trace().Msg("return existing connection")
