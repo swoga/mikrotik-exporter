@@ -76,7 +76,7 @@ jobs:
       - name: Compress files
         run: ${{ env.ARCHIVER }} ${{ env.OUTPUT_ARCHIVE }} ${{ env.OUTPUT_BINARY }} LICENSE
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: mikrotik-exporter.${{ matrix.os }}-${{ matrix.arch }}
           path: ${{ env.OUTPUT_ARCHIVE }}
