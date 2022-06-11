@@ -96,7 +96,7 @@ jobs:
       - name: Decompress
         run: tar -xf mikrotik-exporter.linux-amd64.tar.gz
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         with:
           install: true
       - name: Login to GHCR
