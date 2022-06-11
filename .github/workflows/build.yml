@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: ${{ env.GO_VERSION }}
+      - name: Vet
+        run: go vet ./...
       - name: Test
         run: go test -v ./...
   build-go:
