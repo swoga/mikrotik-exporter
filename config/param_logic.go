@@ -110,7 +110,7 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 
 		return value, true
 	case PARAM_TYPE_DATETIME:
-		dateTime, err := time.Parse("Jan/02/2006 15:04:05", word)
+		dateTime, err := time.ParseInLocation("Jan/02/2006 15:04:05", word, time.Local)
 		if err != nil {
 			parseLog.Err(err).Msg("failed to parse datetime")
 			return 0, false
