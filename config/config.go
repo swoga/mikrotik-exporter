@@ -92,8 +92,17 @@ func (c *Config) loadContents(basePath string) error {
 }
 
 func (c *Config) loadConfigFiles(basePath string) error {
+	err := os.Chdir(basePath)
+	if err != nil {
+		return err
+	}
+
 	for _, path := range c.ConfigFiles {
-		path = filepath.Join(basePath, path)
+		path, err = filepath.Abs(path)
+		if err != nil {
+			return err
+		}
+
 		log.Logger.Debug().Str("path", path).Msg("get files for glob")
 		files, err := filepath.Glob(path)
 		if err != nil {
