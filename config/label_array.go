@@ -1,10 +1,11 @@
 package config
 
-type Labels = *LabelArray
-type LabelArray []Label
+import "github.com/rs/zerolog"
 
-func (x *LabelArray) GetByName(name string) (*Label, int) {
-	for i, label := range *x {
+type Labels []Label
+
+func (x Labels) GetByName(name string) (*Label, int) {
+	for i, label := range x {
 		if label.GetName() == name {
 			return &label, i
 		}
@@ -12,12 +13,29 @@ func (x *LabelArray) GetByName(name string) (*Label, int) {
 	return nil, -1
 }
 
-func (x *LabelArray) Add(item Label) {
+func (x *Labels) Add(item Label) {
 	tmp := *x
 	*x = append(tmp, item)
 }
 
-func (x *LabelArray) RemoveByIndex(i int) {
+func (x *Labels) RemoveByIndex(i int) {
 	tmp := *x
 	*x = append(tmp[:i], tmp[i+1:]...)
+}
+
+func (x Labels) LabelNames() []string {
+	names := make([]string, len(x))
+	for i, label := range x {
+		names[i] = label.GetName()
+	}
+	return names
+}
+
+func (x Labels) LabelValues(log zerolog.Logger, response map[string]string, variables map[string]string) []string {
+	values := make([]string, len(x))
+	for i, label := range x {
+		labelValue := label.AsString(log, response, variables)
+		values[i] = labelValue
+	}
+	return values
 }

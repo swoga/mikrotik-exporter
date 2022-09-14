@@ -76,8 +76,8 @@ func (x *Command) addMetrics(log zerolog.Logger, registerer prometheus.Registere
 		return
 	}
 
-	commandLabelNames := x.HasLabels.LabelNames()
-	commandLabelValues := x.HasLabels.LabelValues(log, re.Map, variables)
+	commandLabelNames := x.Labels.LabelNames()
+	commandLabelValues := x.Labels.LabelValues(log, re.Map, variables)
 
 	for _, metric := range *x.Metrics {
 		value, ok := metric.TryGetValue(log, re.Map, variables)
@@ -90,11 +90,8 @@ func (x *Command) addMetrics(log zerolog.Logger, registerer prometheus.Registere
 }
 
 func (x *Command) getChildVariables(log zerolog.Logger, response map[string]string, variables map[string]string) map[string]string {
-	if x.Variables == nil {
-		return variables
-	}
 	childVariables := utils.CopyStringStringMap(variables)
-	for _, variable := range *x.Variables {
+	for _, variable := range x.Variables {
 		childVariables[variable.GetName()] = variable.AsString(log, response, variables)
 	}
 	return childVariables

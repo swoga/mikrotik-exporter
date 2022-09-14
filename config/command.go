@@ -50,7 +50,7 @@ type Command struct {
 	CommandBase CommandBase `yaml:",inline"`
 
 	Metrics     Metrics   `yaml:"metrics"`
-	HasLabels   HasLabels `yaml:",inline"`
+	Labels      Labels    `yaml:"labels"`
 	Variables   Labels    `yaml:"variables"`
 	SubCommands []Command `yaml:"sub_commands"`
 }

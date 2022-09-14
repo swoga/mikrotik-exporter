@@ -13,7 +13,7 @@ type CommandExtension struct {
 
 func (x *CommandExtension) ExtendCommand(log zerolog.Logger, command Command) {
 	commandExtLog := log.With().Str("command", command.CommandBase.Command).Logger()
-	x.extendLabels(commandExtLog, x.Labels, command.HasLabels.Labels)
+	x.extendLabels(commandExtLog, x.Labels, command.Labels)
 	x.extendLabels(commandExtLog, x.Variables, command.Variables)
 	x.extendMetrics(commandExtLog, x.Metrics, command.Metrics)
 }
@@ -35,7 +35,7 @@ func (x *CommandExtension) extendLabels(log zerolog.Logger, extensions []LabelEx
 			switch extension.Extension.ExtensionAction {
 			case EXTENSION_ACTION_OVERWRITE:
 				extendLog.Trace().Msg("overwrite label/variable")
-				(*originals)[i] = extension.Label
+				originals[i] = extension.Label
 			case EXTENSION_ACTION_REMOVE:
 				extendLog.Trace().Msg("remove label/variable")
 				originals.RemoveByIndex(i)

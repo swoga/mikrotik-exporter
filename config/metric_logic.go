@@ -52,7 +52,7 @@ func (metric *Metric) createPrometheusCounter(registerer prometheus.Registerer, 
 }
 
 func (metric *Metric) createPrometheusMetric(log zerolog.Logger, registerer prometheus.Registerer, commandLabelNames []string) (AddMetric, error) {
-	metricLabelNames := metric.HasLabels.LabelNames()
+	metricLabelNames := metric.Labels.LabelNames()
 	labelNames := append(commandLabelNames, metricLabelNames...)
 
 	switch metric.MetricType {
@@ -67,7 +67,7 @@ func (metric *Metric) createPrometheusMetric(log zerolog.Logger, registerer prom
 }
 
 func (metric *Metric) AddValue(log zerolog.Logger, registerer prometheus.Registerer, value float64, commandLabelNames, commandLabelValues []string, response map[string]string, variables map[string]string, metricCache map[string]AddMetric) {
-	metricLabelValues := metric.HasLabels.LabelValues(log, response, variables)
+	metricLabelValues := metric.Labels.LabelValues(log, response, variables)
 	labelValues := append(commandLabelValues, metricLabelValues...)
 
 	fn, found := metricCache[metric.GetName()]

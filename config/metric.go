@@ -20,10 +20,10 @@ var (
 type Metric struct {
 	Param Param `yaml:",inline"`
 
-	MetricName string    `yaml:"metric_name"`
-	MetricType string    `yaml:"metric_type"`
-	Help       string    `yaml:"help"`
-	HasLabels  HasLabels `yaml:",inline"`
+	MetricName string `yaml:"metric_name"`
+	MetricType string `yaml:"metric_type"`
+	Help       string `yaml:"help"`
+	Labels     Labels `yaml:"labels"`
 }
 
 func DefaultMetric() Metric {
