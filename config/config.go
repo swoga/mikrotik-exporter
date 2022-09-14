@@ -15,6 +15,15 @@ type Credentials struct {
 	Password *string `yaml:"password"`
 }
 
+func (c Credentials) MarshalYAML() (interface{}, error) {
+	type plain Credentials
+	v := "<redacted>"
+	return plain{
+		Username: &v,
+		Password: &v,
+	}, nil
+}
+
 type Config struct {
 	ConfigD ConfigD `yaml:",inline"`
 
