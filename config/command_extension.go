@@ -3,7 +3,7 @@ package config
 import "github.com/rs/zerolog"
 
 type CommandExtension struct {
-	CommandBase CommandBase `yaml:",inline"`
+	Command string `yaml:"command"`
 
 	Metrics     []MetricExtension  `yaml:"metrics"`
 	Labels      []LabelExtension   `yaml:"labels"`

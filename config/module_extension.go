@@ -10,7 +10,7 @@ type ModuleExtension struct {
 func (x *ModuleExtension) GetByCommand(commandStr string) []CommandExtension {
 	commands := []CommandExtension{}
 	for _, command := range x.Commands {
-		if command.CommandBase.Command == commandStr {
+		if command.Command == commandStr {
 			commands = append(commands, command)
 		}
 	}
