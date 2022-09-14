@@ -101,3 +101,11 @@ func (r *remapRe) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	return nil
 }
+
+func (r remapRe) MarshalYAML() (interface{}, error) {
+	return yaml.MapSlice{
+		{
+			Key: r.regex.String(), Value: r.replacement,
+		},
+	}, nil
+}
