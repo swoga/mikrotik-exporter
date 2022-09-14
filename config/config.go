@@ -37,13 +37,13 @@ type Config struct {
 
 	ConfigFiles []string `yaml:"config_files"`
 
-	ConnectionCleanupInterval         int `yaml:"connection_cleanup_interval"`
-	ConnectionCleanupIntervalDuration time.Duration
-	ConnectionUseTimeout              int `yaml:"connection_use_timeout"`
-	ConnectionUseTimeoutDuration      time.Duration
+	ConnectionCleanupInterval         int           `yaml:"connection_cleanup_interval"`
+	ConnectionCleanupIntervalDuration time.Duration `yaml:"-"`
+	ConnectionUseTimeout              int           `yaml:"connection_use_timeout"`
+	ConnectionUseTimeoutDuration      time.Duration `yaml:"-"`
 
 	moduleMap map[string]*Module
-	TargetMap map[string]*Target
+	TargetMap map[string]*Target `yaml:"-"`
 }
 
 func DefaultConfig() Config {

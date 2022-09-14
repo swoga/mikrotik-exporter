@@ -7,10 +7,10 @@ import (
 )
 
 type Target struct {
-	Name            string `yaml:"name"`
-	Address         string `yaml:"address"`
-	Timeout         int    `yaml:"timeout"`
-	TimeoutDuration time.Duration
+	Name            string            `yaml:"name"`
+	Address         string            `yaml:"address"`
+	Timeout         int               `yaml:"timeout"`
+	TimeoutDuration time.Duration     `yaml:"-"`
 	Queue           int               `yaml:"queue"`
 	Credentials     Credentials       `yaml:",inline"`
 	Variables       map[string]string `yaml:"variables"`
