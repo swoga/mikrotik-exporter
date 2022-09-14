@@ -81,10 +81,6 @@ func (sc *SafeConfig) LoadConfig() (err error) {
 		return fmt.Errorf("error parsing config file: %s", err)
 	}
 	basePath := filepath.Dir(sc.configFile)
-	basePath, err = filepath.Abs(basePath)
-	if err != nil {
-		return err
-	}
 	err = c.loadContents(basePath)
 	if err != nil {
 		return fmt.Errorf("error loading config file: %s", err)
