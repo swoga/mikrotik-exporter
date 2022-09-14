@@ -4,8 +4,6 @@ import (
 	"errors"
 	"regexp"
 	"strings"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Label struct {
@@ -38,11 +36,11 @@ func (label *Label) Validate() error {
 	return nil
 }
 
-func (label *Label) UnmarshalYAML(node *yaml.Node) error {
+func (label *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*label = DefaultLabel()
 
 	type plain Label
-	if err := node.Decode((*plain)(label)); err != nil {
+	if err := unmarshal((*plain)(label)); err != nil {
 		return err
 	}
 

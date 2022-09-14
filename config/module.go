@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Module struct {
@@ -23,11 +21,11 @@ func (module *Module) Validate() error {
 	return nil
 }
 
-func (module *Module) UnmarshalYAML(node *yaml.Node) error {
+func (module *Module) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*module = DefaultModule()
 
 	type plain Module
-	if err := node.Decode((*plain)(module)); err != nil {
+	if err := unmarshal((*plain)(module)); err != nil {
 		return err
 	}
 

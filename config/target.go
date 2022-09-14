@@ -4,8 +4,6 @@ import (
 	"errors"
 	"strings"
 	"time"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Target struct {
@@ -40,11 +38,11 @@ func (target *Target) Validate() error {
 	return nil
 }
 
-func (target *Target) UnmarshalYAML(node *yaml.Node) error {
+func (target *Target) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*target = DefaultTarget()
 
 	type plain Target
-	if err := node.Decode((*plain)(target)); err != nil {
+	if err := unmarshal((*plain)(target)); err != nil {
 		return err
 	}
 

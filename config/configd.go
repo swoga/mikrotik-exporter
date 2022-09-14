@@ -1,7 +1,5 @@
 package config
 
-import "gopkg.in/yaml.v3"
-
 type ConfigD struct {
 	Targets          []*Target          `yaml:"targets"`
 	Modules          []*Module          `yaml:"modules"`
@@ -17,11 +15,11 @@ func (x *ConfigD) Validate() error {
 	return nil
 }
 
-func (x *ConfigD) UnmarshalYAML(node *yaml.Node) error {
+func (x *ConfigD) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*x = DefaultConfigD()
 
 	type plain ConfigD
-	if err := node.Decode((*plain)(x)); err != nil {
+	if err := unmarshal((*plain)(x)); err != nil {
 		return err
 	}
 

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/goccy/go-yaml"
 	"github.com/rs/zerolog/log"
-	"gopkg.in/yaml.v3"
 )
 
 type Credentials struct {
@@ -53,11 +53,11 @@ func DefaultConfig() Config {
 	}
 }
 
-func (c *Config) UnmarshalYAML(node *yaml.Node) error {
+func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*c = DefaultConfig()
 
 	type plain Config
-	if err := node.Decode((*plain)(c)); err != nil {
+	if err := unmarshal((*plain)(c)); err != nil {
 		return err
 	}
 
@@ -124,8 +124,7 @@ func (c *Config) loadConfigFile(configFile string) error {
 		return fmt.Errorf("error reading sub-config file: %s", err)
 	}
 	defer yamlReader.Close()
-	decoder := yaml.NewDecoder(yamlReader)
-	decoder.KnownFields(true)
+	decoder := yaml.NewDecoder(yamlReader, yaml.Strict())
 
 	data := &ConfigD{}
 	err = decoder.Decode(data)

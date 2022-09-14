@@ -3,8 +3,6 @@ package config
 import (
 	"errors"
 	"time"
-
-	"gopkg.in/yaml.v3"
 )
 
 type CommandBase struct {
@@ -28,11 +26,11 @@ func (x *CommandBase) Validate() error {
 	return nil
 }
 
-func (x *CommandBase) UnmarshalYAML(node *yaml.Node) error {
+func (x *CommandBase) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*x = DefaultCommandBase()
 
 	type plain CommandBase
-	if err := node.Decode((*plain)(x)); err != nil {
+	if err := unmarshal((*plain)(x)); err != nil {
 		return err
 	}
 
@@ -64,11 +62,11 @@ func (x *Command) Validate() error {
 	return nil
 }
 
-func (x *Command) UnmarshalYAML(node *yaml.Node) error {
+func (x *Command) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*x = DefaultCommand()
 
 	type plain Command
-	if err := node.Decode((*plain)(x)); err != nil {
+	if err := unmarshal((*plain)(x)); err != nil {
 		return err
 	}
 

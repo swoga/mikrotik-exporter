@@ -2,8 +2,6 @@ package config
 
 import (
 	"errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -28,11 +26,11 @@ func (x *Extension) Validate() error {
 	return nil
 }
 
-func (x *Extension) UnmarshalYAML(node *yaml.Node) error {
+func (x *Extension) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*x = DefaultExtension()
 
 	type plain Extension
-	if err := node.Decode((*plain)(x)); err != nil {
+	if err := unmarshal((*plain)(x)); err != nil {
 		return err
 	}
 

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/swoga/mikrotik-exporter/utils"
-	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -54,11 +53,11 @@ func (metric *Metric) Validate() error {
 	return nil
 }
 
-func (x *Metric) UnmarshalYAML(node *yaml.Node) error {
+func (x *Metric) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*x = DefaultMetric()
 
 	type plain Metric
-	if err := node.Decode((*plain)(x)); err != nil {
+	if err := unmarshal((*plain)(x)); err != nil {
 		return err
 	}
 

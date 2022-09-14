@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/swoga/mikrotik-exporter/utils"
-	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -59,11 +58,11 @@ func (param *Param) Validate() error {
 	return nil
 }
 
-func (param *Param) UnmarshalYAML(node *yaml.Node) error {
+func (param *Param) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*param = DefaultParam()
 
 	type plain Param
-	if err := node.Decode((*plain)(param)); err != nil {
+	if err := unmarshal((*plain)(param)); err != nil {
 		return err
 	}
 
@@ -80,40 +79,24 @@ type remapRe struct {
 	replacement *string
 }
 
-func (r *remapRe) UnmarshalYAML(node *yaml.Node) error {
-	if node.Kind != yaml.MappingNode {
-		return errors.New("expected map")
-	}
+func (r *remapRe) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	raw := map[string]*string{}
 
-	if len(node.Content) != 2 {
-		return errors.New("expected map with one key value pair")
-	}
-
-	var exprRaw interface{}
-
-	if err := node.Content[0].Decode(&exprRaw); err != nil {
-		return err
-	}
-	expr, ok := exprRaw.(string)
-	if !ok {
-		return errors.New("expression not string")
-	}
-	var err error
-	r.regex, err = regexp.Compile(expr)
+	err := unmarshal(&raw)
 	if err != nil {
 		return err
 	}
 
-	var replacementRaw interface{}
-	if err := node.Content[1].Decode(&replacementRaw); err != nil {
-		return err
+	if len(raw) != 1 {
+		return errors.New("expected map with one key value pair")
 	}
-	if replacementRaw != nil {
-		replacement, ok := replacementRaw.(string)
-		if !ok {
-			return errors.New("replacement not string or nil")
+
+	for expr, replacement := range raw {
+		r.regex, err = regexp.Compile(expr)
+		if err != nil {
+			return err
 		}
-		r.replacement = &replacement
+		r.replacement = replacement
 	}
 
 	return nil
