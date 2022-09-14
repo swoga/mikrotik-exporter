@@ -53,7 +53,7 @@ func (param *Param) Validate() error {
 	}
 	utils.SetDefaultString(&param.DateTimeType, PARAM_DATETYPE_FROM_NOW)
 	if !utils.ArrayContainsString(paramDateTimeTypes, param.DateTimeType) {
-		return errors.New("unknown datetime_Type")
+		return errors.New("unknown datetime_type")
 	}
 
 	return nil
