@@ -148,6 +148,7 @@ func (c *Config) loadConfigFile(configFile string) error {
 
 func (c *Config) mergeConfig(data ConfigD) {
 	log.Logger.Trace().Msg("merge sub-config data")
+	c.ConfigD.Targets = append(c.ConfigD.Targets, data.Targets...)
 	c.ConfigD.Modules = append(c.ConfigD.Modules, data.Modules...)
 	c.ConfigD.ModuleExtensions = append(c.ConfigD.ModuleExtensions, data.ModuleExtensions...)
 }
