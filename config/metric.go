@@ -21,8 +21,8 @@ type Metric struct {
 
 	MetricName string `yaml:"metric_name"`
 	MetricType string `yaml:"metric_type"`
-	Help       string `yaml:"help"`
-	Labels     Labels `yaml:"labels"`
+	Help       string `yaml:"help,omitempty"`
+	Labels     Labels `yaml:"labels,omitempty"`
 }
 
 func DefaultMetric() Metric {

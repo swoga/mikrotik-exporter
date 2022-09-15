@@ -1,9 +1,9 @@
 package config
 
 type ConfigD struct {
-	Targets          []*Target          `yaml:"targets"`
-	Modules          []*Module          `yaml:"modules"`
-	ModuleExtensions []*ModuleExtension `yaml:"module_extensions"`
+	Targets          []*Target          `yaml:"targets,omitempty"`
+	Modules          []*Module          `yaml:"modules,omitempty"`
+	ModuleExtensions []*ModuleExtension `yaml:"module_extensions,omitempty"`
 }
 
 func DefaultConfigD() ConfigD {

@@ -28,14 +28,14 @@ var (
 type Param struct {
 	ParamName string `yaml:"param_name"`
 	ParamType string `yaml:"param_type"`
-	Default   string `yaml:"default"`
-	Value     string `yaml:"value"`
+	Default   string `yaml:"default,omitempty"`
+	Value     string `yaml:"value,omitempty"`
 
-	RemapValues   map[string]*string `yaml:"remap_values"`
-	RemapValuesRe []remapRe          `yaml:"remap_values_re"`
+	RemapValues   map[string]*string `yaml:"remap_values,omitempty"`
+	RemapValuesRe []remapRe          `yaml:"remap_values_re,omitempty"`
 
-	Negate       bool   `yaml:"negate"`
-	DateTimeType string `yaml:"datetime_type"`
+	Negate       bool   `yaml:"negate,omitempty"`
+	DateTimeType string `yaml:"datetime_type,omitempty"`
 }
 
 func DefaultParam() Param {

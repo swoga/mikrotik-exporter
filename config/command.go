@@ -9,7 +9,7 @@ type CommandBase struct {
 	Command         string `yaml:"command"`
 	Timeout         int    `yaml:"timeout"`
 	timeoutDuration time.Duration
-	Prefix          string `yaml:"prefix"`
+	Prefix          string `yaml:"prefix,omitempty"`
 }
 
 func DefaultCommandBase() CommandBase {
@@ -48,9 +48,9 @@ type Command struct {
 	CommandBase CommandBase `yaml:",inline"`
 
 	Metrics     Metrics   `yaml:"metrics"`
-	Labels      Labels    `yaml:"labels"`
-	Variables   Labels    `yaml:"variables"`
-	SubCommands []Command `yaml:"sub_commands"`
+	Labels      Labels    `yaml:"labels,omitempty"`
+	Variables   Labels    `yaml:"variables,omitempty"`
+	SubCommands []Command `yaml:"sub_commands,omitempty"`
 }
 
 func DefaultCommand() Command {
