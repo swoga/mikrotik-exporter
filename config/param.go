@@ -4,6 +4,7 @@ import (
 	"errors"
 	"regexp"
 
+	"github.com/goccy/go-yaml"
 	"github.com/swoga/mikrotik-exporter/utils"
 )
 
