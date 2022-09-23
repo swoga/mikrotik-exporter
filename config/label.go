@@ -18,18 +18,14 @@ func DefaultLabel() Label {
 
 var regexValidMetricAndLabelName = regexp.MustCompile("^[a-zA-Z_:][a-zA-Z0-9_:]*$")
 
-func (label *Label) GetName() string {
-	if label.LabelName != "" {
-		return label.LabelName
-	}
-	return strings.ReplaceAll(label.Param.ParamName, "-", "_")
-}
-
 func (label *Label) Validate() error {
-	if label.GetName() == "" {
+	if label.LabelName == "" {
+		label.LabelName = strings.ReplaceAll(label.Param.ParamName, "-", "_")
+	}
+	if label.LabelName == "" {
 		return errors.New("require param_name or label_name")
 	}
-	if !regexValidMetricAndLabelName.MatchString(label.GetName()) {
+	if !regexValidMetricAndLabelName.MatchString(label.LabelName) {
 		return errors.New("invalid label_name")
 	}
 

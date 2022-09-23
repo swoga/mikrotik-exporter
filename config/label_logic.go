@@ -8,7 +8,7 @@ import (
 )
 
 func (label *Label) AsString(log zerolog.Logger, response map[string]string, variables map[string]string) string {
-	labelLog := log.With().Str("label_name", label.GetName()).Logger()
+	labelLog := log.With().Str("label_name", label.LabelName).Logger()
 	labelLog.Trace().Msg("get label value")
 
 	if label.Param.ParamType == PARAM_TYPE_STRING {

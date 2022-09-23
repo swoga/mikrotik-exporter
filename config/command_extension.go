@@ -20,13 +20,13 @@ func (x *CommandExtension) ExtendCommand(log zerolog.Logger, command Command) {
 
 func (x *CommandExtension) extendLabels(log zerolog.Logger, extensions []LabelExtension, originals Labels) {
 	for _, extension := range extensions {
-		extendLog := log.With().Str("label_name", extension.Label.GetName()).Logger()
+		extendLog := log.With().Str("label_name", extension.Label.LabelName).Logger()
 
 		if extension.Extension.ExtensionAction == EXTENSION_ACTION_ADD {
 			extendLog.Trace().Msg("add label/variable")
 			originals.Add(extension.Label)
 		} else {
-			label, i := originals.GetByName(extension.Label.GetName())
+			label, i := originals.GetByName(extension.Label.LabelName)
 			if label == nil {
 				extendLog.Warn().Msg("label/variable not found")
 				continue

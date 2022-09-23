@@ -6,7 +6,7 @@ type Labels []Label
 
 func (x Labels) GetByName(name string) (*Label, int) {
 	for i, label := range x {
-		if label.GetName() == name {
+		if label.LabelName == name {
 			return &label, i
 		}
 	}
@@ -26,7 +26,7 @@ func (x *Labels) RemoveByIndex(i int) {
 func (x Labels) LabelNames() []string {
 	names := make([]string, len(x))
 	for i, label := range x {
-		names[i] = label.GetName()
+		names[i] = label.LabelName
 	}
 	return names
 }

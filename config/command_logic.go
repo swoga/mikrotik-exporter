@@ -92,7 +92,7 @@ func (x *Command) addMetrics(log zerolog.Logger, registerer prometheus.Registere
 func (x *Command) getChildVariables(log zerolog.Logger, response map[string]string, variables map[string]string) map[string]string {
 	childVariables := utils.CopyStringStringMap(variables)
 	for _, variable := range x.Variables {
-		childVariables[variable.GetName()] = variable.AsString(log, response, variables)
+		childVariables[variable.LabelName] = variable.AsString(log, response, variables)
 	}
 	return childVariables
 }
