@@ -39,7 +39,9 @@ type Param struct {
 }
 
 func DefaultParam() Param {
-	return Param{}
+	return Param{
+		ParamType: PARAM_TYPE_INT,
+	}
 }
 
 func (param *Param) Validate() error {
@@ -47,7 +49,6 @@ func (param *Param) Validate() error {
 		return errors.New("either param_name or value must be set")
 	}
 
-	utils.SetDefaultString(&param.ParamType, PARAM_TYPE_INT)
 	if !utils.ArrayContainsString(paramTypes, param.ParamType) {
 		return errors.New("unknown param_type")
 	}
