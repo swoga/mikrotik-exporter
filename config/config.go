@@ -27,11 +27,12 @@ func (c Credentials) MarshalYAML() (interface{}, error) {
 type Config struct {
 	ConfigD ConfigD `yaml:",inline"`
 
-	Listen      string `yaml:"listen"`
-	MetricsPath string `yaml:"metrics_path"`
-	ProbePath   string `yaml:"probe_path"`
-	ReloadPath  string `yaml:"reload_path"`
-	Namespace   string `yaml:"namespace"`
+	Listen         string `yaml:"listen"`
+	MetricsPath    string `yaml:"metrics_path"`
+	ProbePath      string `yaml:"probe_path"`
+	ReloadPath     string `yaml:"reload_path"`
+	DumpConfigPath string `yaml:"dump_config_path"`
+	Namespace      string `yaml:"namespace"`
 
 	Credentials Credentials `yaml:",inline"`
 

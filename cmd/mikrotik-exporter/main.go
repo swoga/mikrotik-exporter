@@ -16,6 +16,7 @@ import (
 	"github.com/swoga/mikrotik-exporter/connection"
 	"go.uber.org/atomic"
 
+	"github.com/goccy/go-yaml"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -63,6 +64,10 @@ func main() {
 	http.Handle(c.MetricsPath, promhttp.Handler())
 	log.Info().Str("path", c.ProbePath).Msg("listen for probe requests at")
 	http.HandleFunc(c.ProbePath, handleProbeRequest)
+	if c.DumpConfigPath != "" {
+		log.Info().Str("path", c.DumpConfigPath).Msg("serve config dump at")
+		http.HandleFunc(c.DumpConfigPath, httpDumpConfig)
+	}
 	log.Info().Str("listen", c.Listen).Msg("starting http server")
 	server := &http.Server{Addr: c.Listen}
 	go startServer(server)
@@ -101,4 +106,10 @@ func waitForSigterm() {
 	signal.Notify(term, os.Interrupt, syscall.SIGTERM)
 	<-term
 	log.Info().Msg("received SIGTERM, shutting down")
+}
+
+func httpDumpConfig(w http.ResponseWriter, r *http.Request) {
+	c := sc.Get()
+	encoder := yaml.NewEncoder(w)
+	encoder.Encode(c)
 }
