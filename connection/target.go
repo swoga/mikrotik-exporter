@@ -33,7 +33,7 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 
 	log.Trace().Msg("try to find existing connection")
 	for c := range tc.connections {
-		if ok, log := c.Use(log); ok {
+		if ok, log := c.Use(log, target.Address, *target.Credentials.Username); ok {
 			return c, log, nil
 		}
 	}
@@ -51,8 +51,10 @@ func (tc *targetConnections) get(log zerolog.Logger, target *config.Target) (*Co
 	go handleAsyncError(log, errC)
 
 	connection := Connection{
-		Client: client,
-		id:     id,
+		Client:   client,
+		address:  target.Address,
+		username: *target.Credentials.Username,
+		id:       id,
 	}
 	tc.connections[&connection] = struct{}{}
 

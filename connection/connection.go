@@ -9,12 +9,14 @@ import (
 )
 
 type Connection struct {
-	mu      sync.RWMutex
-	Client  *routeros.Client
-	inUse   bool
-	healthy bool
-	lastUse time.Time
-	id      int
+	mu       sync.RWMutex
+	Client   *routeros.Client
+	username string
+	address  string
+	inUse    bool
+	healthy  bool
+	lastUse  time.Time
+	id       int
 }
 
 func (c *Connection) check(log zerolog.Logger) bool {
@@ -48,7 +50,7 @@ func (c *Connection) Free(log zerolog.Logger) {
 }
 
 // Check if the connection is usable, if yes mark as used (blocks during healthcheck)
-func (c *Connection) Use(log zerolog.Logger) (bool, zerolog.Logger) {
+func (c *Connection) Use(log zerolog.Logger, address string, username string) (bool, zerolog.Logger) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -60,6 +62,14 @@ func (c *Connection) Use(log zerolog.Logger) (bool, zerolog.Logger) {
 	}
 	if !c.healthy {
 		useLog.Trace().Msg("skip unhealthy connection")
+		return false, log
+	}
+	if c.address != address {
+		useLog.Trace().Msg("target address has changed")
+		return false, log
+	}
+	if c.username != username {
+		useLog.Trace().Msg("target username has changed")
 		return false, log
 	}
 	if !c.check(useLog) {
