@@ -48,13 +48,13 @@ func (x *CommandExtension) extendLabels(log zerolog.Logger, extensions []LabelEx
 
 func (x *CommandExtension) extendMetrics(log zerolog.Logger, extensions []MetricExtension, originals Metrics) {
 	for _, extension := range extensions {
-		extendLog := log.With().Str("metric_name", extension.GetName()).Logger()
+		extendLog := log.With().Str("metric_name", extension.MetricName).Logger()
 
 		if extension.Extension.ExtensionAction == EXTENSION_ACTION_ADD {
 			extendLog.Trace().Msg("add metric")
 			originals.Add(extension.Metric)
 		} else {
-			metric, i := originals.GetByName(extension.Metric.GetName())
+			metric, i := originals.GetByName(extension.Metric.MetricName)
 			if metric == nil {
 				extendLog.Warn().Msg("metric not found")
 				continue

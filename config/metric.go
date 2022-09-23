@@ -29,13 +29,6 @@ func DefaultMetric() Metric {
 	return Metric{}
 }
 
-func (x *Metric) GetName() string {
-	if x.MetricName != "" {
-		return x.MetricName
-	}
-	return strings.ReplaceAll(x.Param.ParamName, "-", "_")
-}
-
 func (metric *Metric) Validate() error {
 	if metric.MetricType == "" {
 		return errors.New("require metric_type")
@@ -43,10 +36,13 @@ func (metric *Metric) Validate() error {
 	if !utils.ArrayContainsString(metricTypes, metric.MetricType) {
 		return errors.New("unknown metric_type")
 	}
-	if metric.GetName() == "" {
+	if metric.MetricName == "" {
+		metric.MetricName = strings.ReplaceAll(metric.Param.ParamName, "-", "_")
+	}
+	if metric.MetricName == "" {
 		return errors.New("require metric_name or param_name")
 	}
-	if !regexValidMetricAndLabelName.MatchString(metric.GetName()) {
+	if !regexValidMetricAndLabelName.MatchString(metric.MetricName) {
 		return errors.New("invalid metric_name")
 	}
 

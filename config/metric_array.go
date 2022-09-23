@@ -5,7 +5,7 @@ type MetricArray []Metric
 
 func (x *MetricArray) GetByName(name string) (*Metric, int) {
 	for i, metric := range *x {
-		if metric.GetName() == name {
+		if metric.MetricName == name {
 			return &metric, i
 		}
 	}

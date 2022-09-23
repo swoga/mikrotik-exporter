@@ -6,7 +6,7 @@ import (
 )
 
 func (metric *Metric) TryGetValue(log zerolog.Logger, response map[string]string, variables map[string]string) (float64, bool) {
-	paramLog := log.With().Str("metric_name", metric.GetName()).Logger()
+	paramLog := log.With().Str("metric_name", metric.MetricName).Logger()
 	paramLog.Trace().Msg("get metric value")
 	value, ok := metric.Param.tryGetValue(paramLog, response, variables)
 	if ok {
@@ -19,7 +19,7 @@ type AddMetric func(labelValues []string, value float64)
 
 func (metric *Metric) createPrometheusGauge(registerer prometheus.Registerer, labelNames []string) (AddMetric, error) {
 	vec := prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: metric.GetName(),
+		Name: metric.MetricName,
 		Help: metric.Help,
 	}, labelNames)
 	err := registerer.Register(vec)
@@ -36,7 +36,7 @@ func (metric *Metric) createPrometheusGauge(registerer prometheus.Registerer, la
 
 func (metric *Metric) createPrometheusCounter(registerer prometheus.Registerer, labelNames []string) (AddMetric, error) {
 	vec := prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: metric.GetName(),
+		Name: metric.MetricName,
 		Help: metric.Help,
 	}, labelNames)
 	err := registerer.Register(vec)
@@ -70,13 +70,13 @@ func (metric *Metric) AddValue(log zerolog.Logger, registerer prometheus.Registe
 	metricLabelValues := metric.Labels.LabelValues(log, response, variables)
 	labelValues := append(commandLabelValues, metricLabelValues...)
 
-	fn, found := metricCache[metric.GetName()]
+	fn, found := metricCache[metric.MetricName]
 	if !found {
 		fnNew, err := metric.createPrometheusMetric(log, registerer, commandLabelNames)
 		if err != nil {
 			panic(err)
 		}
-		metricCache[metric.GetName()] = fnNew
+		metricCache[metric.MetricName] = fnNew
 		fn = fnNew
 	}
 
