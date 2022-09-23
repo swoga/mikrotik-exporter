@@ -52,11 +52,18 @@ func (param *Param) Validate() error {
 	if !utils.ArrayContainsString(paramTypes, param.ParamType) {
 		return errors.New("unknown param_type")
 	}
+
+	if param.ParamType == PARAM_TYPE_DATETIME {
 		if param.DateTimeType == "" {
 			param.DateTimeType = PARAM_DATETYPE_FROM_NOW
 		}
-	if !utils.ArrayContainsString(paramDateTimeTypes, param.DateTimeType) {
-		return errors.New("unknown datetime_type")
+		if !utils.ArrayContainsString(paramDateTimeTypes, param.DateTimeType) {
+			return errors.New("unknown datetime_type")
+		}
+	} else {
+		if param.DateTimeType != "" {
+			return errors.New("datetime_type only allowed for param_type = datetime")
+		}
 	}
 
 	return nil
