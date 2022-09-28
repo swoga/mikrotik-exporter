@@ -14,7 +14,6 @@ modules:
               /interface/ethernet/monitor
               =numbers={id}
               =once=
-
             labels:
               - param_name: name
                 param_type: string
