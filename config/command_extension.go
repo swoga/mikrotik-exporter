@@ -38,6 +38,7 @@ func (x *CommandExtension) ExtendCommand(log zerolog.Logger, command Command) {
 	x.extendLabels(commandExtLog, x.Labels, command.Labels)
 	x.extendLabels(commandExtLog, x.Variables, command.Variables)
 	x.extendMetrics(commandExtLog, x.Metrics, command.Metrics)
+	x.SubCommands.Extend(commandExtLog, command.SubCommands)
 }
 
 func (x *CommandExtension) extendLabels(log zerolog.Logger, extensions []LabelExtension, originals Labels) {
