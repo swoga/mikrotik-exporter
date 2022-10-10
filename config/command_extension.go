@@ -5,10 +5,32 @@ import "github.com/rs/zerolog"
 type CommandExtension struct {
 	Command string `yaml:"command"`
 
-	Metrics     []MetricExtension  `yaml:"metrics"`
-	Labels      []LabelExtension   `yaml:"labels"`
-	Variables   []LabelExtension   `yaml:"variables"`
-	SubCommands []CommandExtension `yaml:"sub_commands"`
+	Metrics     []MetricExtension `yaml:"metrics"`
+	Labels      []LabelExtension  `yaml:"labels"`
+	Variables   []LabelExtension  `yaml:"variables"`
+	SubCommands CommandExtensions `yaml:"sub_commands"`
+}
+
+type CommandExtensions []CommandExtension
+
+func (x CommandExtensions) GetByCommand(commandStr string) []CommandExtension {
+	commands := []CommandExtension{}
+	for _, command := range x {
+		if command.Command == commandStr {
+			commands = append(commands, command)
+		}
+	}
+	return commands
+}
+
+func (x CommandExtensions) Extend(log zerolog.Logger, commands []Command) {
+	for _, command := range commands {
+		extensions := x.GetByCommand(command.CommandBase.Command)
+		log.Trace().Str("command", command.CommandBase.Command).Int("n", len(extensions)).Msg("got extensions for command")
+		for _, extension := range extensions {
+			extension.ExtendCommand(log, command)
+		}
+	}
 }
 
 func (x *CommandExtension) ExtendCommand(log zerolog.Logger, command Command) {
