@@ -7,7 +7,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/prometheus/common v0.37.0
 	github.com/rs/zerolog v1.28.0
-	github.com/swoga/go-routeros v1.0.0
+	github.com/swoga/go-routeros v1.0.1
 	go.uber.org/atomic v1.10.0
 )
 
