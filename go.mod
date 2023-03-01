@@ -3,7 +3,7 @@ module github.com/swoga/mikrotik-exporter
 go 1.19
 
 require (
-	github.com/goccy/go-yaml v1.9.8
+	github.com/goccy/go-yaml v1.10.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/prometheus/common v0.40.0
 	github.com/rs/zerolog v1.29.0
