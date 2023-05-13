@@ -8,7 +8,7 @@ require (
 	github.com/prometheus/common v0.42.0
 	github.com/rs/zerolog v1.29.1
 	github.com/swoga/go-routeros v1.0.2
-	go.uber.org/atomic v1.10.0
+	go.uber.org/atomic v1.11.0
 )
 
 require (
