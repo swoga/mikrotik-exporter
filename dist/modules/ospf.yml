@@ -25,3 +25,6 @@ modules:
           - param_name: passive
             param_type: bool
             metric_type: gauge
+          - param_name: cost
+            param_type: int
+            metric_type: gauge
