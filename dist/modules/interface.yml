@@ -147,3 +147,17 @@ modules:
             param_type: datetime
             metric_type: gauge
             datetime_type: timestamp
+          - param_name: mtu
+            param_type: int
+            metric_type: gauge
+            remap_values:
+              auto: null
+          - param_name: actual-mtu
+            param_type: int
+            metric_type: gauge
+          - param_name: l2mtu
+            param_type: int
+            metric_type: gauge
+          - param_name: max-l2mtu
+            param_type: int
+            metric_type: gauge
