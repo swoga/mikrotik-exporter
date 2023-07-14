@@ -21,6 +21,22 @@ modules:
               - param_name: sfp-rx-power
                 param_type: int
                 metric_type: gauge
+              - param_name: sfp-module-present
+                param_type: bool
+                metric_type: gauge
+              - param_name: sfp-temperature
+                param_type: int
+                metric_type: gauge
+              - param_name: sfp-link-length-sm
+                param_type: int
+                metric_type: gauge
+              # param for RouterOS < 6.47
+              - param_name: sfp-link-length-9um
+                param_type: int
+                metric_name: sfp_link_length_sm
+                metric_type: gauge
+                remap_values_re:
+                  - '^([0-9]+)000$': '${1}'
         metrics:
           - param_name: rx-broadcast
             param_type: int
