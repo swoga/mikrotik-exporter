@@ -37,6 +37,23 @@ modules:
                 metric_type: gauge
                 remap_values_re:
                   - '^([0-9]+)000$': '${1}'
+              - param_name: full-duplex
+                param_type: bool
+                metric_type: gauge
+              - param_name: rate
+                param_type: int
+                metric_type: gauge
+                remap_values_re:
+                  - '([0-9]+)Gbps': '${1}000000000'
+                  - '([0-9]+)Mbps': '${1}000000'
+              - param_name: auto-negotiation
+                param_type: int
+                metric_type: gauge
+                remap_values:
+                  disabled: 0
+                  done: 1
+                  failed: -1
+                  incomplete: -2
         metrics:
           - param_name: rx-broadcast
             param_type: int
