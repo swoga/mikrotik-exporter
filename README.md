@@ -3,6 +3,9 @@
 It is not predetermined which metrics are collected, you can create your own modules.  
 Some modules are shipped with the program, see [here](/dist/modules).  
 
+## Info - RouterOS v7
+The logic supports RouterOS v7, but not all modules have been adapted to the new command structure and parameter names.
+
 ## Probing
 Targets can be probed by requesting:
 <pre>http://localhost:9436/probe?<b>target=xxx</b></pre>
