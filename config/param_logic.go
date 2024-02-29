@@ -10,7 +10,7 @@ import (
 
 const (
 	DATETIME_FORMAT_V6 = "Jan/02/2006 15:04:05"
-	DATETIME_FORMAT_V7 = "2006-02-01 15:04:05"
+	DATETIME_FORMAT_V7 = "2006-01-02 15:04:05"
 )
 
 func (param *Param) PreprocessValue(log zerolog.Logger, response map[string]string, variables map[string]string) (string, bool) {
