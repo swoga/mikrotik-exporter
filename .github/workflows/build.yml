@@ -7,14 +7,14 @@ on:
       - v*
 
 env:
-  GO_VERSION: 1.21
+  GO_VERSION: 1.22
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         if: ${{ !env.ACT }}
         with:
           path: |
@@ -23,7 +23,7 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Vet
@@ -52,7 +52,7 @@ jobs:
       GOARCH: ${{ matrix.arch }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cache/go-build
@@ -60,7 +60,7 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Build
@@ -78,7 +78,7 @@ jobs:
       - name: Compress files
         run: ${{ env.ARCHIVER }} ${{ env.OUTPUT_ARCHIVE }} ${{ env.OUTPUT_BINARY }} LICENSE
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: mikrotik-exporter.${{ matrix.os }}-${{ matrix.arch }}
           path: ${{ env.OUTPUT_ARCHIVE }}
@@ -92,7 +92,7 @@ jobs:
     needs: build-go
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: mikrotik-exporter.linux-amd64
       - name: Decompress

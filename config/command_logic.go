@@ -33,6 +33,13 @@ func (x *Command) Run(ctx context.Context, log zerolog.Logger, client *routeros.
 		select {
 		case re, open := <-response.Chan():
 			if !open {
+				if response.Done != nil && len(response.Done.Map) > 0 {
+					responseLog := commandLog.With().Str("sentence_no", "done").Logger()
+					err := x.processResponse(ctx, responseLog, client, registerer, parentVariables, response.Done, metricCache)
+					if err != nil {
+						return err
+					}
+				}
 				commandLog.Trace().Msg("response channel closed")
 				if err := response.Err(); err != nil {
 					return err
