@@ -84,7 +84,7 @@ jobs:
           path: ${{ env.OUTPUT_ARCHIVE }}
       - name: Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.OUTPUT_ARCHIVE }}
   build-container:
