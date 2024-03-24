@@ -1,0 +1,53 @@
+modules:
+  - name: wifiwave2
+    commands:
+      - command: |-
+          /interface/wifiwave2/registration-table/print
+          =stats=
+        labels:
+          - param_name: mac-address
+            param_type: string
+        variables:
+          - param_name: mac-address
+            label_name: mac_address
+            param_type: string
+        metrics:
+          - param_name: signal
+            param_type: int
+            metric_type: gauge
+          - param_name: uptime
+            param_type: timespan
+            metric_type: gauge
+          - param_name: tx-rate
+            param_type: int
+            metric_type: gauge
+            remap_values_re:
+              - '([0-9]+)Gbps': '${1}000000000'
+              - '([0-9]+)Mbps': '${1}000000'
+              - '([0-9]+)kbps': '${1}000'
+              - '([0-9]+)bps': '${1}'
+          - param_name: rx-rate
+            param_type: int
+            metric_type: gauge
+            remap_values_re:
+              - '([0-9]+)Gbps': '${1}000000000'
+              - '([0-9]+)Mbps': '${1}000000'
+              - '([0-9]+)kbps': '${1}000'
+              - '([0-9]+)bps': '${1}'
+          - param_name: tx-bits-per-second
+            param_type: int
+            metric_type: gauge
+            remap_values_re:
+              - '([0-9]+)Gbps': '${1}000000000'
+              - '([0-9]+)Mbps': '${1}000000'
+              - '([0-9]+)kbps': '${1}000'
+              - '([0-9]+)bps': '${1}'
+          - param_name: rx-bits-per-second
+            param_type: int
+            metric_type: gauge
+            remap_values_re:
+              - '([0-9]+)Gbps': '${1}000000000'
+              - '([0-9]+)Mbps': '${1}000000'
+              - '([0-9]+)kbps': '${1}000'
+              - '([0-9]+)bps': '${1}'
+

@@ -204,3 +204,9 @@ label/variable extensions are matched by `label_name`
 
 extension_action: add / overwrite / remove
 ```
+
+### Development Notes
+```
+go get -u ./...
+go build ./...
+```

@@ -115,15 +115,13 @@ func (param *Param) tryGetValue(log zerolog.Logger, response map[string]string, 
 
 		return value, true
 	case PARAM_TYPE_DATETIME:
+		dateTimeLayout := DATETIME_LAYOUT_V6
 		startsWithNumber := len(word) > 0 && word[0] >= '0' && word[0] <= '9'
-		var dateTimeFormat string
 		if startsWithNumber {
-			dateTimeFormat = DATETIME_FORMAT_V7
-		} else {
-			dateTimeFormat = DATETIME_FORMAT_V6
+			dateTimeLayout = DATETIME_LAYOUT_V7
 		}
 
-		dateTime, err := time.ParseInLocation(dateTimeFormat, word, time.Local)
+		dateTime, err := time.ParseInLocation(dateTimeLayout, word, time.Local)
 		if err != nil {
 			parseLog.Err(err).Msg("failed to parse datetime")
 			return 0, false
