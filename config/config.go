@@ -101,17 +101,16 @@ func (c *Config) UnmarshalYAML(ctx context.Context, unmarshal func(interface{}) 
 	return nil
 }
 
-func (c *Config) loadConfigFiles(basePath string) error {
-	err := os.Chdir(basePath)
-	if err != nil {
-		return err
+func getAbsPath(basePath, path string) string {
+	if filepath.IsAbs(path) {
+		return path
 	}
+	return filepath.Join(basePath, path)
+}
 
+func (c *Config) loadConfigFiles(basePath string) error {
 	for _, path := range c.ConfigFiles {
-		path, err = filepath.Abs(path)
-		if err != nil {
-			return err
-		}
+		path = getAbsPath(basePath, path)
 
 		log.Logger.Debug().Str("path", path).Msg("get files for glob")
 		files, err := filepath.Glob(path)
