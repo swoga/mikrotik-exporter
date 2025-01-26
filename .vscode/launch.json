@@ -1,13 +1,13 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Package",
-            "type": "go",
-            "request": "launch",
-            "mode": "debug",
-            "program": "${workspaceFolder}/cmd/mikrotik-exporter",
-            "args": ["--config.file", "../../config.yml", "--trace"]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Package",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/mikrotik-exporter",
+      "args": ["--config.file", "../../.dev/config.yml", "--trace"]
+    }
+  ]
 }
