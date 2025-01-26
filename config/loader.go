@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -55,6 +56,8 @@ func New(configFile string) (*SafeConfig, error) {
 	}, nil
 }
 
+type ctxBasePathKey struct{}
+
 func (sc *SafeConfig) LoadConfig() (err error) {
 	c := &Config{}
 	defer func() {
@@ -75,14 +78,13 @@ func (sc *SafeConfig) LoadConfig() (err error) {
 	defer yamlReader.Close()
 	decoder := yaml.NewDecoder(yamlReader, yaml.Strict())
 
-	err = decoder.Decode(c)
+	ctx := context.Background()
+	basePath := filepath.Dir(sc.configFile)
+	ctx = context.WithValue(ctx, ctxBasePathKey{}, basePath)
+
+	err = decoder.DecodeContext(ctx, c)
 	if err != nil {
 		return fmt.Errorf("error parsing config file: %s", err)
-	}
-	basePath := filepath.Dir(sc.configFile)
-	err = c.loadContents(basePath)
-	if err != nil {
-		return fmt.Errorf("error loading config file: %s", err)
 	}
 
 	sc.Lock()

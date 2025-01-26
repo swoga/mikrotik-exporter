@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -63,7 +64,7 @@ func DefaultConfig() Config {
 	}
 }
 
-func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (c *Config) UnmarshalYAML(ctx context.Context, unmarshal func(interface{}) error) error {
 	*c = DefaultConfig()
 
 	type plain Config
@@ -74,10 +75,11 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	c.ConnectionCleanupIntervalDuration = time.Duration(c.ConnectionCleanupInterval) * time.Second
 	c.ConnectionUseTimeoutDuration = time.Duration(c.ConnectionUseTimeout) * time.Second
 
-	return nil
-}
+	basePath, ok := ctx.Value(ctxBasePathKey{}).(string)
+	if !ok {
+		panic("missing base path in context")
+	}
 
-func (c *Config) loadContents(basePath string) error {
 	if err := c.loadConfigFiles(basePath); err != nil {
 		return err
 	}
