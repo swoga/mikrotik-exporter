@@ -6,7 +6,7 @@ require (
 	github.com/goccy/go-yaml v1.16.0
 	github.com/prometheus/client_golang v1.21.1
 	github.com/prometheus/common v0.63.0
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/swoga/go-routeros v1.1.0
 	go.uber.org/atomic v1.11.0
 )
