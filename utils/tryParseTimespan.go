@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-var regexTimespan = regexp.MustCompile(`^(?:(\d+)(w))?(?:(\d+)(d))?(?:(\d+)(h))?(?:(\d+)(m))?(?:(\d+)(s))?$`)
+var regexTimespan = regexp.MustCompile(`^(?:(\d+)(w))?(?:(\d+)(d))?(?:(\d+)(h))?(?:(\d+)(m))?(?:(\d+)(s))?(?:(\d+)(ms))?$`)
 
 func TryParseTimespan(str string) (float64, error) {
 	match := regexTimespan.FindStringSubmatch(str)
@@ -41,6 +41,8 @@ func TryParseTimespan(str string) (float64, error) {
 			value += groupValue * 60
 		case "s":
 			value += groupValue
+		case "ms":
+			value += groupValue / 1000
 		default:
 			return 0, fmt.Errorf("invalid timespan suffix: %s", groupSuffix)
 		}

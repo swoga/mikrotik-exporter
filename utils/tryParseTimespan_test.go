@@ -15,6 +15,7 @@ var (
 		{"1d", 24 * 60 * 60},
 		{"1w", 7 * 24 * 60 * 60},
 		{"1w20h1s", 7*24*60*60 + 20*60*60 + 1},
+		{"1w20h1s100ms", 7*24*60*60 + 20*60*60 + 1 + 0.1},
 	}
 	invalidTimespans = []invalidTimespanTest{
 		{"1y", "no regex match"},
