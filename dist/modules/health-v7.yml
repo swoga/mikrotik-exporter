@@ -1,0 +1,68 @@
+modules:
+  - name: health-v7
+    namespace: health
+    commands:
+      - command: |-
+          /system/health/print
+          ?type=W
+        metrics:
+          - param_name: value
+            metric_name: power_consumption
+            param_type: int
+            metric_type: gauge
+      - command: |-
+          /system/health/print
+          ?type=C
+        metrics:
+          - param_name: value
+            metric_name: temperature
+            param_type: int
+            metric_type: gauge
+            labels:
+              - param_name: name
+                param_type: string
+                label_name: sensor
+                remap_values_re:
+                  - "(.*)-temperature(.*)": "$1$2"
+      - command: |-
+          /system/health/print
+          ?type=V
+        metrics:
+          - param_name: value
+            metric_name: psu_voltage
+            param_type: int
+            metric_type: gauge
+            labels:
+              - param_name: name
+                param_type: string
+                label_name: psu
+                remap_values_re:
+                  - "psu(.*)-voltage": "$1"
+      - command: |-
+          /system/health/print
+          ?type=A
+        metrics:
+          - param_name: value
+            metric_name: psu_current
+            param_type: int
+            metric_type: gauge
+            labels:
+              - param_name: name
+                param_type: string
+                label_name: psu
+                remap_values_re:
+                  - "psu(.*)-current": "$1"
+      - command: |-
+          /system/health/print
+          ?type=RPM
+        metrics:
+          - param_name: value
+            metric_name: fan_speed
+            param_type: int
+            metric_type: gauge
+            labels:
+              - param_name: name
+                param_type: string
+                label_name: fan
+                remap_values_re:
+                  - "fan(.*)-speed": "$1"
