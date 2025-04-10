@@ -11,7 +11,7 @@ import (
 
 func (module *Module) Run(ctx context.Context, log zerolog.Logger, client *routeros.Client, registerer prometheus.Registerer, variables map[string]string) error {
 	log.Trace().Msg("running module")
-	moduleRegisterer := prometheus.WrapRegistererWithPrefix(module.Name+"_", registerer)
+	moduleRegisterer := prometheus.WrapRegistererWithPrefix(module.Namespace+"_", registerer)
 	metricCache := make(map[string]AddMetric)
 
 	for i, command := range module.Commands {

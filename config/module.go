@@ -5,8 +5,9 @@ import (
 )
 
 type Module struct {
-	Name     string    `yaml:"name"`
-	Commands []Command `yaml:"commands"`
+	Name      string    `yaml:"name"`
+	Namespace string    `yaml:"namespace"`
+	Commands  []Command `yaml:"commands"`
 }
 
 func DefaultModule() Module {
@@ -27,6 +28,10 @@ func (module *Module) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	type plain Module
 	if err := unmarshal((*plain)(module)); err != nil {
 		return err
+	}
+
+	if module.Namespace == "" {
+		module.Namespace = module.Name
 	}
 
 	err := module.Validate()
