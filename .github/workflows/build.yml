@@ -9,6 +9,10 @@ on:
 env:
   GO_VERSION: "1.24.5"
 
+permissons:
+  contents: write
+  packages: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
