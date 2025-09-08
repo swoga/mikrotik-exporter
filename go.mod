@@ -4,7 +4,7 @@ go 1.24.5
 
 require (
 	github.com/goccy/go-yaml v1.18.0
-	github.com/prometheus/client_golang v1.23.0
+	github.com/prometheus/client_golang v1.23.2
 	github.com/prometheus/common v0.66.1
 	github.com/rs/zerolog v1.34.0
 	github.com/swoga/go-routeros v1.2.0
