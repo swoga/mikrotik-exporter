@@ -1,0 +1,70 @@
+---
+modules:
+  - name: ipsec
+    namespace: ipsec
+    commands:
+      - command: /ip/ipsec/peer/print
+        prefix: peer
+        labels:
+          - param_name: name
+            param_type: string
+          - param_name: comment
+            param_type: string
+          - param_name: address
+            param_type: string
+            label_name: "remote_address"
+            remap_values_re:
+              - "(.*)/32": "$1"
+          - param_name: "local-address"
+            param_type: string
+            label_name: "local_address"
+        metrics:
+          - param_name: disabled
+            metric_name: enabled
+            param_type: bool
+            metric_type: gauge
+            negate: true
+            default: 1
+      - command: /ip/ipsec/policy/print
+        prefix: policy
+        labels:
+          - param_name: "src-address"
+            param_type: string
+            label_name: "src_address"
+            default: ""
+          - param_name: "dst-address"
+            param_type: string
+            label_name: "dst_address"
+            default: ""
+          - param_name: "sa-src-address"
+            param_type: string
+            label_name: "sa_src_address"
+            default: ""
+            remap_values_re:
+              - "(.*)/32": "$1"
+          - param_name: "sa-dst-address"
+            param_type: string
+            label_name: "sa_dst_address"
+            default: ""
+          - param_name: "peer"
+            param_type: string
+            default: ""
+          - param_name: "comment"
+            param_type: string
+            default: ""
+        metrics:
+          - metric_name: state
+            metric_type: gauge
+            param_type: int
+            value: 1
+            labels:
+              - param_name: "ph2-state"
+                param_type: string
+                label_name: "ph2_state"
+                default: ""
+          - metric_name: "ph2_count"
+            param_name: "ph2-count"
+            param_type: int
+            metric_type: gauge
+            default: 0
+
