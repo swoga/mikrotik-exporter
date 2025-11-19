@@ -13,8 +13,6 @@ modules:
           - param_name: address
             param_type: string
             label_name: "remote_address"
-            remap_values_re:
-              - "(.*)/32": "$1"
           - param_name: "local-address"
             param_type: string
             label_name: "local_address"
@@ -40,8 +38,6 @@ modules:
             param_type: string
             label_name: "sa_src_address"
             default: ""
-            remap_values_re:
-              - "(.*)/32": "$1"
           - param_name: "sa-dst-address"
             param_type: string
             label_name: "sa_dst_address"
@@ -53,9 +49,10 @@ modules:
             param_type: string
             default: ""
         metrics:
-          - metric_name: state
+          - metric_name: ph2_state
             metric_type: gauge
             param_type: int
+            default: 0
             value: 1
             labels:
               - param_name: "ph2-state"
@@ -67,4 +64,3 @@ modules:
             param_type: int
             metric_type: gauge
             default: 0
-
