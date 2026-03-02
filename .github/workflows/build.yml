@@ -96,7 +96,7 @@ jobs:
     needs: build-go
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: mikrotik-exporter.linux-amd64
       - name: Decompress
