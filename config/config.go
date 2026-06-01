@@ -16,7 +16,7 @@ type Credentials struct {
 	Password *string `yaml:"password"`
 }
 
-func (c Credentials) MarshalYAML() (interface{}, error) {
+func (c Credentials) MarshalYAML() (any, error) {
 	type plain Credentials
 	v := "<redacted>"
 	return plain{
@@ -64,7 +64,7 @@ func DefaultConfig() Config {
 	}
 }
 
-func (c *Config) UnmarshalYAML(ctx context.Context, unmarshal func(interface{}) error) error {
+func (c *Config) UnmarshalYAML(ctx context.Context, unmarshal func(any) error) error {
 	*c = DefaultConfig()
 
 	type plain Config

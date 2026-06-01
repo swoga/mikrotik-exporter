@@ -22,7 +22,7 @@ func (module *Module) Validate() error {
 	return nil
 }
 
-func (module *Module) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (module *Module) UnmarshalYAML(unmarshal func(any) error) error {
 	*module = DefaultModule()
 
 	type plain Module

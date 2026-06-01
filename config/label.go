@@ -32,7 +32,7 @@ func (label *Label) Validate() error {
 	return nil
 }
 
-func (label *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (label *Label) UnmarshalYAML(unmarshal func(any) error) error {
 	*label = DefaultLabel()
 
 	type plain Label

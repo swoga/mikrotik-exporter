@@ -26,7 +26,7 @@ func (x *CommandBase) Validate() error {
 	return nil
 }
 
-func (x *CommandBase) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (x *CommandBase) UnmarshalYAML(unmarshal func(any) error) error {
 	*x = DefaultCommandBase()
 
 	type plain CommandBase
@@ -62,7 +62,7 @@ func (x *Command) Validate() error {
 	return nil
 }
 
-func (x *Command) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (x *Command) UnmarshalYAML(unmarshal func(any) error) error {
 	*x = DefaultCommand()
 
 	type plain Command

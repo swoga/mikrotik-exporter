@@ -3,9 +3,9 @@ package config
 import (
 	"errors"
 	"regexp"
+	"slices"
 
 	"github.com/goccy/go-yaml"
-	"github.com/swoga/mikrotik-exporter/utils"
 )
 
 const (
@@ -49,7 +49,7 @@ func (param *Param) Validate() error {
 		return errors.New("either param_name or value must be set")
 	}
 
-	if !utils.ArrayContainsString(paramTypes, param.ParamType) {
+	if !slices.Contains(paramTypes, param.ParamType) {
 		return errors.New("unknown param_type")
 	}
 
@@ -57,7 +57,7 @@ func (param *Param) Validate() error {
 		if param.DateTimeType == "" {
 			param.DateTimeType = PARAM_DATETYPE_FROM_NOW
 		}
-		if !utils.ArrayContainsString(paramDateTimeTypes, param.DateTimeType) {
+		if !slices.Contains(paramDateTimeTypes, param.DateTimeType) {
 			return errors.New("unknown datetime_type")
 		}
 	} else {
@@ -69,7 +69,7 @@ func (param *Param) Validate() error {
 	return nil
 }
 
-func (param *Param) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (param *Param) UnmarshalYAML(unmarshal func(any) error) error {
 	*param = DefaultParam()
 
 	type plain Param
@@ -90,7 +90,7 @@ type remapRe struct {
 	replacement *string
 }
 
-func (r *remapRe) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (r *remapRe) UnmarshalYAML(unmarshal func(any) error) error {
 	raw := map[string]*string{}
 
 	err := unmarshal(&raw)
@@ -113,7 +113,7 @@ func (r *remapRe) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
-func (r remapRe) MarshalYAML() (interface{}, error) {
+func (r remapRe) MarshalYAML() (any, error) {
 	return yaml.MapSlice{
 		{
 			Key: r.regex.String(), Value: r.replacement,

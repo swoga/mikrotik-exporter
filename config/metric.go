@@ -2,9 +2,8 @@ package config
 
 import (
 	"errors"
+	"slices"
 	"strings"
-
-	"github.com/swoga/mikrotik-exporter/utils"
 )
 
 const (
@@ -33,7 +32,7 @@ func (metric *Metric) Validate() error {
 	if metric.MetricType == "" {
 		return errors.New("require metric_type")
 	}
-	if !utils.ArrayContainsString(metricTypes, metric.MetricType) {
+	if !slices.Contains(metricTypes, metric.MetricType) {
 		return errors.New("unknown metric_type")
 	}
 	if metric.MetricName == "" {
@@ -49,7 +48,7 @@ func (metric *Metric) Validate() error {
 	return nil
 }
 
-func (x *Metric) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (x *Metric) UnmarshalYAML(unmarshal func(any) error) error {
 	*x = DefaultMetric()
 
 	type plain Metric

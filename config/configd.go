@@ -15,7 +15,7 @@ func (x *ConfigD) Validate() error {
 	return nil
 }
 
-func (x *ConfigD) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (x *ConfigD) UnmarshalYAML(unmarshal func(any) error) error {
 	*x = DefaultConfigD()
 
 	type plain ConfigD

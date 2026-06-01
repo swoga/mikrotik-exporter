@@ -38,7 +38,7 @@ func (target *Target) Validate() error {
 	return nil
 }
 
-func (target *Target) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (target *Target) UnmarshalYAML(unmarshal func(any) error) error {
 	*target = DefaultTarget()
 
 	type plain Target

@@ -26,7 +26,7 @@ func (x *Extension) Validate() error {
 	return nil
 }
 
-func (x *Extension) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (x *Extension) UnmarshalYAML(unmarshal func(any) error) error {
 	*x = DefaultExtension()
 
 	type plain Extension
