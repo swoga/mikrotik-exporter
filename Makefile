@@ -20,7 +20,3 @@ push-container:
 	docker push $(CONTAINER_IMAGE):$(TAG)
 	docker push quay.io/$(CONTAINER_IMAGE):$(TAG)
 	docker push ghcr.io/$(CONTAINER_IMAGE):$(TAG)
-
-.PHONY: act
-act:
-	act -r --artifact-server-path /tmp/act-artifacts
